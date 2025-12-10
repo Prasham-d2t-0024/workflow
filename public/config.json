@@ -1,0 +1,9 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "appName": "Workflow",
+  "version": "1.0.0",
+  "features": {
+    "enableNotifications": true,
+    "enableChat": false
+  }
+}
