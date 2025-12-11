@@ -1,9 +1,16 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap")
-layer(base);
-
 @import "tailwindcss";
 @import "swiper/css/bundle";
 @import "@fortawesome/fontawesome-free/css/all.min.css";
+
+@layer base {
+  @font-face {
+    font-family: "Outfit";
+    src: url("/fonts/outfit/Outfit-VariableFont_wght.ttf") format("truetype");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -189,6 +196,10 @@ layer(base);
   }
   body {
     @apply relative font-normal font-outfit z-1 bg-gray-50;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
   }
 }
 
