@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ApiService } from './api.service';
@@ -60,7 +60,7 @@ export class AuthService {
    * Login user and store token
    */
   login(email: string, password: string): Promise<boolean> {
-    let bypassLogin = true;
+    let bypassLogin = false;
     if(bypassLogin){
         return new Promise((resolve)=>{
             const token = this.generateToken();
@@ -75,18 +75,14 @@ export class AuthService {
     }else{
         return new Promise((resolve) => {
           this.apiService.post(ApiEndpointsConsts.LOGIN, { email, password }).subscribe((resp)=>{
-    
-            console.log('Login response:', resp);
-            //   const token = this.generateToken();
-            //   const userData = { email, loginTime: new Date().toISOString() };
-              
-            //   localStorage.setItem(this.TOKEN_KEY, token);
-            //   localStorage.setItem(this.USER_KEY, JSON.stringify(userData));
-              
-            //   this.isAuthenticatedSubject.next(true);
-              resolve(true);
+            isDevMode() && console.log('%cLoggedin Successfully', 'color: green; font-weight: bold;');
+            let {token, user} = resp;
+            localStorage.setItem(StorageKeysConsts.TOKEN_KEY, token);
+            localStorage.setItem(StorageKeysConsts.USER_KEY, JSON.stringify(user));
+            this.isAuthenticatedSubject.next(true);
+            resolve(true);
           },(err)=>{
-              resolve(false);
+            resolve(false);
           });
         });
     }

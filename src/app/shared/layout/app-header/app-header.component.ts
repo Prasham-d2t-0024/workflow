@@ -19,6 +19,7 @@ import { UserDropdownComponent } from '../../components/header/user-dropdown/use
 })
 export class AppHeaderComponent {
   isApplicationMenuOpen = false;
+  os : string = 'Other';
   readonly isMobileOpen$;
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
@@ -26,11 +27,23 @@ export class AppHeaderComponent {
   constructor(public sidebarService: SidebarService) {
     this.isMobileOpen$ = this.sidebarService.isMobileOpen$;
   }
+  private getOS(): 'win' | 'mac' | 'other' {
+    const ua = window.navigator.userAgent;
+    if (/Windows/i.test(ua)) return 'win';
+    if (/Mac OS|Macintosh|MacIntel/i.test(ua)) return 'mac';
+    return 'other';
+  }
+
+  ngOnInit(){
+     this.os = this.getOS();
+  }
+
 
   handleToggle() {
     if (window.innerWidth >= 1280) {
       this.sidebarService.toggleExpanded();
     } else {
+      if(this.isApplicationMenuOpen) this.isApplicationMenuOpen = false;
       this.sidebarService.toggleMobileOpen();
     }
   }
