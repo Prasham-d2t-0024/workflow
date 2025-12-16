@@ -19,6 +19,7 @@ import { SignInComponent } from './pages/auth-pages/sign-in/sign-in.component';
 import { SignUpComponent } from './pages/auth-pages/sign-up/sign-up.component';
 import { CalenderComponent } from './pages/calender/calender.component';
 import { authGuard, guestGuard } from './shared/guards/auth.guard';
+import { ComponentTypesComponent } from './pages/content-types-main/component-types.component';
 
 export const routes: Routes = [
   {
@@ -37,6 +38,11 @@ export const routes: Routes = [
         pathMatch: 'full',
         title:
           'Angular Ecommerce Dashboard | TailAdmin - Angular Admin Dashboard Template',
+      },
+      {
+        path:'component-types',
+        component:ComponentTypesComponent,
+        title:'Component Types Master Screen'
       },
       {
         path:'calendar',

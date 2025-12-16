@@ -32,7 +32,6 @@ constructor(private http: HttpClient) {}
    * HTTP GET REQUEST
    * @param url Url
    * @param params params
-   * @param customHeader access token
    * @param encodedHeader logout custom header
    * @param customResponseType custom response type
    * @returns response
@@ -40,6 +39,7 @@ constructor(private http: HttpClient) {}
   get(
     url: string,
     params?: any,
+    appendToken?: boolean,
     encodedHeader?: string
   ) {
     let fullUrl: string = this.baseUrl ? this.baseUrl + url : url;
@@ -50,7 +50,12 @@ constructor(private http: HttpClient) {}
     // if (encodedHeader) {
     //   headers = headers.set('Authorization', `Basic ${encodedHeader}`);
     // }
-
+    if(appendToken){
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        headers = headers.append('Authorization', `Bearer ${token}`);
+      }
+    }
     let options: any = { headers };
 
     if (params) {
@@ -69,20 +74,25 @@ constructor(private http: HttpClient) {}
    * HTTP POST REQUEST
    * @param url Url
    * @param params params
-   * @param customHeader access token
-   * @param logOutHeader logout custom header
-   * @param customResponseType custom response type
    * @returns response
    */
   post(
     url: string,
     args: any,
+    appendToken?: boolean,
     params?: any
   ) {
     let fullUrl: string = this.baseUrl ? this.baseUrl + url : url;
     let headers = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json');
-
+    if (!(args instanceof FormData)) { // condition to prevent send wrong content type when sending formdata for any cases
+      headers = headers.append('Content-Type', 'application/json');
+    }
+    if(appendToken){
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        headers = headers.append('Authorization', `Bearer ${token}`);
+      }
+    }
     let options: any = { headers };
 
     if (params) {
@@ -95,6 +105,84 @@ constructor(private http: HttpClient) {}
 
     return this.http
       .post(fullUrl, args, options)
+      .pipe(
+        catchError(err => this.handleError(err))
+      );
+  }
+
+  /**
+   * HTTP PUT REQUEST
+   * @param url Url
+   * @param args Request body
+   * @param appendToken Append authorization token
+   * @param params Query params
+   * @returns response
+   */
+  put(
+    url: string,
+    args: any,
+    appendToken?: boolean,
+    params?: any
+  ) {
+    let fullUrl: string = this.baseUrl ? this.baseUrl + url : url;
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json');
+    if(appendToken){
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        headers = headers.append('Authorization', `Bearer ${token}`);
+      }
+    }
+    let options: any = { headers };
+
+    if (params) {
+      options = {
+        ...options,
+        withCredentials: false,
+        params: params
+      };
+    }
+
+    return this.http
+      .put(fullUrl, args, options)
+      .pipe(
+        catchError(err => this.handleError(err))
+      );
+  }
+
+  /**
+   * HTTP DELETE REQUEST
+   * @param url Url
+   * @param appendToken Append authorization token
+   * @param params Query params
+   * @returns response
+   */
+  delete(
+    url: string,
+    appendToken?: boolean,
+    params?: any
+  ) {
+    let fullUrl: string = this.baseUrl ? this.baseUrl + url : url;
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/json');
+    if(appendToken){
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        headers = headers.append('Authorization', `Bearer ${token}`);
+      }
+    }
+    let options: any = { headers };
+
+    if (params) {
+      options = {
+        ...options,
+        withCredentials: false,
+        params: params
+      };
+    }
+
+    return this.http
+      .delete(fullUrl, options)
       .pipe(
         catchError(err => this.handleError(err))
       );

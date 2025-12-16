@@ -1,0 +1,98 @@
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class UtilityService {
+
+  constructor() {}
+
+  /**
+   * Format ISO date string to readable format
+   * @param dateString ISO date string
+   * @param format 'short' | 'medium' | 'long' - default is 'medium'
+   * @returns Formatted date string
+   */
+  formatDate(dateString: string | null | undefined, format: 'short' | 'medium' | 'long' = 'medium'): string {
+    if (!dateString) {
+      return 'N/A';
+    }
+
+    try {
+      const date = new Date(dateString);
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return 'Invalid Date';
+      }
+
+      switch (format) {
+        case 'short':
+          // Format: MM/DD/YYYY
+          return date.toLocaleDateString('en-US', {
+            month: '2-digit',
+            day: '2-digit',
+            year: 'numeric'
+          });
+        
+        case 'long':
+          // Format: Month DD, YYYY at HH:MM AM/PM
+          return date.toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+          });
+        
+        case 'medium':
+        default:
+          // Format: MMM DD, YYYY
+          return date.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+          });
+      }
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Invalid Date';
+    }
+  }
+
+  /**
+   * Get relative time from now (e.g., "2 hours ago", "3 days ago")
+   * @param dateString ISO date string
+   * @returns Relative time string
+   */
+  getRelativeTime(dateString: string | null | undefined): string {
+    if (!dateString) {
+      return 'N/A';
+    }
+
+    try {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffInMs = now.getTime() - date.getTime();
+      const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+      const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+      const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+      if (diffInMinutes < 1) {
+        return 'Just now';
+      } else if (diffInMinutes < 60) {
+        return `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''} ago`;
+      } else if (diffInHours < 24) {
+        return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+      } else if (diffInDays < 30) {
+        return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+      } else {
+        return this.formatDate(dateString, 'medium');
+      }
+    } catch (error) {
+      console.error('Error calculating relative time:', error);
+      return 'Invalid Date';
+    }
+  }
+}
