@@ -8,12 +8,11 @@ import { UtilityService } from '../../shared/services/utility.service';
 import { AlertComponent } from '../../shared/components/ui/alert/alert.component';
 
 interface componentType {
-  id: string;
+  component_type_id: number;
   name: string;
   createdAt: string;
   publishedAt: string;
   updatedAt: string;
-  documentId: string;
 }
 @Component({
   selector: 'app-component-types',
@@ -70,12 +69,11 @@ export class ComponentTypesComponent implements OnInit{
 
   mapComponentTypes(data: any[]): componentType[] {
     return data.map(item => ({
-      id: item.id || item._id || '',
+      component_type_id: Number(item?.component_type_id) ?? '',
       name: item.name || '',
       createdAt: item.createdAt || '',
       publishedAt: item.publishedAt || '',
       updatedAt: item.updatedAt || '',
-      documentId: item.documentId || ''
     }));
   }
 
@@ -135,7 +133,7 @@ export class ComponentTypesComponent implements OnInit{
 
   onSaveEdit() {
     if (this.editingComponentType && this.newComponentTypeName.trim()) {
-      this.apiService.put(`/componenttypes/${this.editingComponentType.id}`, 
+      this.apiService.put(`/componenttypes/${this.editingComponentType.component_type_id}`, 
         { name: this.newComponentTypeName.trim() }, 
         true
       ).subscribe({
@@ -181,7 +179,7 @@ export class ComponentTypesComponent implements OnInit{
 
   confirmDelete() {
     if (this.deletingComponentType) {
-      this.apiService.delete(`/componenttypes/${this.deletingComponentType.id}`, true).subscribe({
+      this.apiService.delete(`/componenttypes/${this.deletingComponentType.component_type_id}`, true).subscribe({
         next: (res) => {
           console.log('Delete successful:', res);
           this.closeDeleteModal();

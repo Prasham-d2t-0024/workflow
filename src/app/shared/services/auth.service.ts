@@ -74,7 +74,7 @@ export class AuthService {
         })
     }else{
         return new Promise((resolve) => {
-          this.apiService.post(ApiEndpointsConsts.LOGIN, { email, password }).subscribe((resp)=>{
+          this.apiService.post(ApiEndpointsConsts.LOGIN, { username:email, password }).subscribe((resp)=>{
             isDevMode() && console.log('%cLoggedin Successfully', 'color: green; font-weight: bold;');
             let {token, user} = resp;
             localStorage.setItem(StorageKeysConsts.TOKEN_KEY, token);
