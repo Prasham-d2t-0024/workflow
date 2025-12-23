@@ -133,10 +133,10 @@ export class ComponentTypesComponent implements OnInit{
           console.log('Edit successful:', res);
           this.closeEditComponentTypeModal();
           this.loadComponentTypes();
-          this.notificationService.success('Component Type edited successfully');
+          this.notificationService.success('Component Type updated successfully');
         },
         error: (err) => {
-          this.notificationService.error('Soemthing went wrong while editing component type');
+          this.notificationService.error('Something went wrong while editing component type');
           console.error('Edit failed:', err);
         }
       });
@@ -154,7 +154,7 @@ export class ComponentTypesComponent implements OnInit{
           this.notificationService.success('Component Type added successfully');
         },
         error: (err) => {
-          this.notificationService.error('Soemthing went wrong while adding component type');
+          this.notificationService.error('Something went wrong while adding component type');
           console.error('Cant Add Item:', err);
         }
       });
@@ -181,7 +181,7 @@ export class ComponentTypesComponent implements OnInit{
           this.notificationService.success('Component Type Deleted successfully');
         },
         error: (err) => {
-          this.notificationService.error('Soemthing went wrong while deleting component type');
+          this.notificationService.error('Something went wrong while deleting component type');
           console.error('Delete failed:', err);
         }
       });

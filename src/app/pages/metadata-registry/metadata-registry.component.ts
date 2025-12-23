@@ -74,7 +74,7 @@ export class MetadataRegistryComponent {
         this.componentTypeOptions = this.metadataRegistryService.convertToOptions(data);
       },
       error: (err) => {
-        this.notificationService.error('Soemthing went wrong while loading metadata list');
+        this.notificationService.error('Something went wrong while loading metadata list');
         console.error('Failed to load component types:', err);
       }
     });
@@ -86,7 +86,7 @@ export class MetadataRegistryComponent {
         this.metadataRegistries = data;
       },
       error: (err) => {
-        this.notificationService.error('Soemthing went wrong while loading metadata list');
+        this.notificationService.error('Something went wrong while loading metadata list');
         console.error('Failed to load metadata registries:', err);
       }
     });
@@ -159,10 +159,10 @@ export class MetadataRegistryComponent {
         next: (res) => {
           this.closeEditMetadataRegistryModal();
           this.loadMetadataRegistries();
-          this.notificationService.success('Metadata edited successfully');
+          this.notificationService.success('Metadata updated successfully');
         },
         error: (err) => {
-          this.notificationService.error('Soemthing went wrong while editing metadata');
+          this.notificationService.error('Something went wrong while editing metadata');
           console.error('Edit failed:', err);
         }
       });
@@ -186,7 +186,7 @@ export class MetadataRegistryComponent {
           this.notificationService.success('Metadata added successfully');
         },
         error: (err) => {
-          this.notificationService.error('Soemthing went wrong while adding metadata');
+          this.notificationService.error('Something went wrong while adding metadata');
           console.error('Cant Add Item:', err);
         }
       });
@@ -213,7 +213,7 @@ export class MetadataRegistryComponent {
           this.notificationService.success('Metadata Deleted successfully');
         },
         error: (err) => {
-          this.notificationService.error('Soemthing went wrong while deleting metadata');
+          this.notificationService.error('Something went wrong while deleting metadata');
           console.error('Delete failed:', err);
         }
       });
