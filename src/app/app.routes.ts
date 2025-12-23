@@ -20,6 +20,8 @@ import { SignUpComponent } from './pages/auth-pages/sign-up/sign-up.component';
 import { CalenderComponent } from './pages/calender/calender.component';
 import { authGuard, guestGuard } from './shared/guards/auth.guard';
 import { ComponentTypesComponent } from './pages/component-types-main/component-types.component';
+import { MetadataRegistryComponent } from './pages/metadata-registry/metadata-registry.component';
+import { UserRolesComponent } from './pages/user-roles/user-roles.component';
 
 export const routes: Routes = [
   {
@@ -43,6 +45,16 @@ export const routes: Routes = [
         path:'component-types',
         component:ComponentTypesComponent,
         title:'Component Types Master Screen'
+      },
+      {
+        path:'metadata-registry',
+        component:MetadataRegistryComponent,
+        title:'Metadata Registry Master Screen'
+      },
+      {
+        path:'roles',
+        component:UserRolesComponent,
+        title:'User Roles Management'
       },
       {
         path:'calendar',

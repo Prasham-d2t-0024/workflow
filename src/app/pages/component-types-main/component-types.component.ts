@@ -6,14 +6,14 @@ import { ModalComponent } from '../../shared/components/ui/modal/modal.component
 import { ApiService } from '../../shared/services/api.service';
 import { UtilityService } from '../../shared/services/utility.service';
 import { AlertComponent } from '../../shared/components/ui/alert/alert.component';
+import { NotificationService } from '../../shared/services/notification.service';
 
 interface componentType {
-  id: string;
+  component_type_id: number;
   name: string;
   createdAt: string;
   publishedAt: string;
   updatedAt: string;
-  documentId: string;
 }
 @Component({
   selector: 'app-component-types',
@@ -54,7 +54,8 @@ export class ComponentTypesComponent implements OnInit{
 
   constructor(
     private apiService:ApiService,
-    public utilityService: UtilityService
+    public utilityService: UtilityService,
+    private notificationService: NotificationService
   ){}
 
   ngOnInit() {
@@ -70,12 +71,11 @@ export class ComponentTypesComponent implements OnInit{
 
   mapComponentTypes(data: any[]): componentType[] {
     return data.map(item => ({
-      id: item.id || item._id || '',
+      component_type_id: Number(item?.component_type_id) ?? '',
       name: item.name || '',
       createdAt: item.createdAt || '',
       publishedAt: item.publishedAt || '',
       updatedAt: item.updatedAt || '',
-      documentId: item.documentId || ''
     }));
   }
 
@@ -83,16 +83,6 @@ export class ComponentTypesComponent implements OnInit{
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
     }
-  }
-
-  handleViewMore(item: componentType) {
-    // logic here
-    console.log('View More:', item);
-  }
-
-  handleDelete(item: componentType) {
-    // logic here
-    console.log('Delete:', item);
   }
 
   getBadgeColor(status: string): 'success' | 'warning' | 'error' {
@@ -135,7 +125,7 @@ export class ComponentTypesComponent implements OnInit{
 
   onSaveEdit() {
     if (this.editingComponentType && this.newComponentTypeName.trim()) {
-      this.apiService.put(`/componenttypes/${this.editingComponentType.id}`, 
+      this.apiService.put(`/componenttypes/${this.editingComponentType.component_type_id}`, 
         { name: this.newComponentTypeName.trim() }, 
         true
       ).subscribe({
@@ -143,8 +133,10 @@ export class ComponentTypesComponent implements OnInit{
           console.log('Edit successful:', res);
           this.closeEditComponentTypeModal();
           this.loadComponentTypes();
+          this.notificationService.success('Component Type updated successfully');
         },
         error: (err) => {
+          this.notificationService.error('Something went wrong while editing component type');
           console.error('Edit failed:', err);
         }
       });
@@ -157,11 +149,12 @@ export class ComponentTypesComponent implements OnInit{
         true
       ).subscribe({
         next: (res) => {
-          console.log('Added Item successful:', res);
           this.closeAddComponentTypeModal();
           this.loadComponentTypes();
+          this.notificationService.success('Component Type added successfully');
         },
         error: (err) => {
+          this.notificationService.error('Something went wrong while adding component type');
           console.error('Cant Add Item:', err);
         }
       });
@@ -181,13 +174,14 @@ export class ComponentTypesComponent implements OnInit{
 
   confirmDelete() {
     if (this.deletingComponentType) {
-      this.apiService.delete(`/componenttypes/${this.deletingComponentType.id}`, true).subscribe({
+      this.apiService.delete(`/componenttypes/${this.deletingComponentType.component_type_id}`, true).subscribe({
         next: (res) => {
-          console.log('Delete successful:', res);
           this.closeDeleteModal();
           this.loadComponentTypes();
+          this.notificationService.success('Component Type Deleted successfully');
         },
         error: (err) => {
+          this.notificationService.error('Something went wrong while deleting component type');
           console.error('Delete failed:', err);
         }
       });
