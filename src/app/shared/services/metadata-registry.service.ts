@@ -108,7 +108,7 @@ export class MetadataRegistryService {
    */
   convertToOptions(componentTypes: any): Option[] {
     return componentTypes.map((ct:any) => ({
-      value: ct.component_type_id,
+      value: String(ct.id),
       label: ct.name
     }));
   }

@@ -46,6 +46,9 @@
                             Multiple
                         </th>
                         <th class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                            Component Type
+                        </th>
+                        <th class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
                             Created At
                         </th>
                         <th class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
@@ -72,10 +75,21 @@
                             </div>
                         </td>
                         <td class="px-4 py-4 text-gray-700 whitespace-nowrap text-theme-sm dark:text-gray-400">
-                            {{ item.isrequired ? 'Yes' : 'No' }}
+                            @if(item.isrequired){
+                                <app-badge variant="light" color="success"> Yes </app-badge>
+                            }@else if(!item.isrequired){
+                                <app-badge variant="light" color="error"> No </app-badge>
+                            }
                         </td>
                         <td class="px-4 py-4 text-gray-700 whitespace-nowrap text-theme-sm dark:text-gray-400">
-                            {{ item.ismultiple ? 'Yes' : 'No' }}
+                            @if(item.ismultiple){
+                                <app-badge variant="light" color="success"> Yes </app-badge>
+                            }@else if(!item.ismultiple){
+                                <app-badge variant="light" color="error"> No </app-badge>
+                            }
+                        </td>
+                        <td class="px-4 py-4 text-gray-700 whitespace-nowrap text-theme-sm dark:text-gray-400">
+                            {{ item.componentType?.name ?? 'N.A.' }}
                         </td>
                         <td class="px-4 py-4 text-gray-700 whitespace-nowrap text-theme-sm dark:text-gray-400">
                             {{ utilityService.formatDate(item.createdAt, 'medium') }}

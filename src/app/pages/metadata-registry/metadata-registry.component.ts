@@ -8,6 +8,8 @@ import { AlertComponent } from '../../shared/components/ui/alert/alert.component
 import { SelectComponent, Option } from '../../shared/components/form/select/select.component';
 import { MetadataRegistryService, MetadataRegistry } from '../../shared/services/metadata-registry.service';
 import { ComponentType } from '../../shared/services/component-type.service';
+import { BadgeComponent } from '../../shared/components/ui/badge/badge.component';
+import { NotificationService } from '../../shared/services/notification.service';
 
 @Component({
   selector: 'app-metadata-registry',
@@ -17,7 +19,8 @@ import { ComponentType } from '../../shared/services/component-type.service';
     ButtonComponent,
     ModalComponent,
     AlertComponent,
-    SelectComponent],
+    SelectComponent,
+    BadgeComponent],
   templateUrl: './metadata-registry.component.html',
   styleUrl: './metadata-registry.component.css'
 })
@@ -55,7 +58,8 @@ export class MetadataRegistryComponent {
 
   constructor(
     private metadataRegistryService: MetadataRegistryService,
-    public utilityService: UtilityService
+    public utilityService: UtilityService,
+    public notificationService: NotificationService
   ){}
 
   ngOnInit() {
@@ -68,9 +72,9 @@ export class MetadataRegistryComponent {
       next: (data: ComponentType[]) => {
         this.componentTypes = data;
         this.componentTypeOptions = this.metadataRegistryService.convertToOptions(data);
-        console.log('Component Types:', this.componentTypes);
       },
       error: (err) => {
+        this.notificationService.error('Soemthing went wrong while loading metadata list');
         console.error('Failed to load component types:', err);
       }
     });
@@ -80,9 +84,9 @@ export class MetadataRegistryComponent {
     this.metadataRegistryService.getMetadataRegistries().subscribe({
       next: (data: MetadataRegistry[]) => {
         this.metadataRegistries = data;
-        console.log('Metadata Registries:', this.metadataRegistries);
       },
       error: (err) => {
+        this.notificationService.error('Soemthing went wrong while loading metadata list');
         console.error('Failed to load metadata registries:', err);
       }
     });
@@ -146,18 +150,19 @@ export class MetadataRegistryComponent {
         key: this.formTitle.trim(),
         isrequired: this.formIsRequired,
         ismultiple: this.formIsMultiple,
-        componenttype_id: this.formComponentType,
+        componenttype_id: Number(this.formComponentType),
         // publishedAt: this.editingMetadataRegistry.publishedAt,
       };
-      let payload = JSON.stringify({"data":obj});
+      let payload = JSON.stringify(obj);
       
       this.metadataRegistryService.updateMetadataRegistry(this.editingMetadataRegistry.metadata_registry_id, payload).subscribe({
         next: (res) => {
-          console.log('Edit successful:', res);
           this.closeEditMetadataRegistryModal();
           this.loadMetadataRegistries();
+          this.notificationService.success('Metadata edited successfully');
         },
         error: (err) => {
+          this.notificationService.error('Soemthing went wrong while editing metadata');
           console.error('Edit failed:', err);
         }
       });
@@ -176,11 +181,12 @@ export class MetadataRegistryComponent {
       
       this.metadataRegistryService.createMetadataRegistry(obj).subscribe({
         next: (res) => {
-          console.log('Added Item successful:', res);
           this.closeAddMetadataRegistryModal();
           this.loadMetadataRegistries();
+          this.notificationService.success('Metadata added successfully');
         },
         error: (err) => {
+          this.notificationService.error('Soemthing went wrong while adding metadata');
           console.error('Cant Add Item:', err);
         }
       });
@@ -202,11 +208,12 @@ export class MetadataRegistryComponent {
     if (this.deletingMetadataRegistry) {
       this.metadataRegistryService.deleteMetadataRegistry(this.deletingMetadataRegistry.metadata_registry_id).subscribe({
         next: (res) => {
-          console.log('Delete successful:', res);
           this.closeDeleteModal();
           this.loadMetadataRegistries();
+          this.notificationService.success('Metadata Deleted successfully');
         },
         error: (err) => {
+          this.notificationService.error('Soemthing went wrong while deleting metadata');
           console.error('Delete failed:', err);
         }
       });
