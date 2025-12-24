@@ -8,16 +8,67 @@ import { BadgeComponent } from '../../shared/components/ui/badge/badge.component
 import { RolesService, Role, RoleCreatePayload } from '../../shared/services/roles.service';
 import { UtilityService } from '../../shared/services/utility.service';
 import { NotificationService } from '../../shared/services/notification.service';
+import { DataTableAction, DataTableColumn, DataTableHeaderButton, DataTableHeaderConfig } from '../../shared/components/tables/data-table/data-table.models';
+import { DatatableComponent } from '../../shared/components/tables/data-table/data-table.component';
 
 @Component({
   selector: 'app-user-roles',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, ModalComponent, AlertComponent, BadgeComponent],
+  imports: [CommonModule, FormsModule, ButtonComponent, ModalComponent, AlertComponent, BadgeComponent, DatatableComponent],
   templateUrl: './user-roles.component.html',
   styleUrl: './user-roles.component.css'
 })
 export class UserRolesComponent {
   roles: Role[] = [];
+  rolesColumns: DataTableColumn<any>[] = [
+  {
+    key: 'name',
+    label: 'Name',
+    sortable: true,
+    searchable: true,
+  },
+  {
+    key: 'description',
+    label: 'Description',
+    searchable: true,
+  },
+  {
+    key: 'status',
+    label: 'Status',
+    type: 'badge',
+    badgeMap: {
+      active: {
+        label: 'Active',
+        color: 'bg-success-50 text-success-600',
+      },
+      inactive: {
+        label: 'Inactive',
+        color: 'bg-error-50 text-error-600',
+      },
+    },
+  },
+  ];
+
+  rolesActions: DataTableAction<any>[] = [
+    {
+      icon: 'fa-solid fa-pencil',
+      handler: (row) => this.onEdit(row),
+    },
+    {
+      icon: 'fa-solid fa-trash',
+      handler: (row) => this.onDelete(row),
+    },
+  ];
+
+  headerConfig: DataTableHeaderConfig<any> = {
+    title:'User Roles',
+    buttons : [
+      {
+        label:'Add Role',
+        icon:'fas fa-plus'
+      }
+    ]
+  }
 
   currentPage = 1;
   itemsPerPage = 5;
@@ -105,7 +156,11 @@ export class UserRolesComponent {
           this.notificationService.success('Role added successfully');
         },
         error: (err) => {
-          this.notificationService.error('Something went wrong while adding role');
+          if(err.includes('409')){
+            this.notificationService.error(`Role with the ${this.formName.trim().toLowerCase()} already exists`);
+          }else{
+            this.notificationService.error('Something went wrong while adding role');
+          }
           console.error('Cant Add Role:', err);
         },
       });

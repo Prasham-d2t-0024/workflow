@@ -2,6 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, Observable, throwError } from 'rxjs';
 import { AppConfig } from './auth.service';
+import { NotificationService } from './notification.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,7 @@ export class ApiService {
 config: AppConfig | null = null;
 baseUrl: string = '';
 
-constructor(private http: HttpClient) {}
+constructor(private http: HttpClient, public notificationService:NotificationService, private router: Router) {}
     load(): Promise<void> {
         return new Promise((resolve) => {
             this.http.get<AppConfig>('/config.json').subscribe({
@@ -106,7 +108,9 @@ constructor(private http: HttpClient) {}
     return this.http
       .post(fullUrl, args, options)
       .pipe(
-        catchError(err => this.handleError(err))
+        catchError((err) => {
+          return this.handleError(err)
+        })
       );
   }
 
@@ -190,8 +194,10 @@ constructor(private http: HttpClient) {}
 
    handleError(error: any): Observable<any> {
     if(error.status === 401 || error.status === 403) {
+      localStorage.clear();
+      this.router.navigate(['/signin']);
       return throwError(() => new Error('Unauthorized or Forbidden'));
-    } else {
+    }else {
       const errorMessage = (error.message) ? error.message : error.status ? `${error.status} - ${error.statusText}` : 'Server Error';
       return throwError(() => errorMessage);
     }

@@ -22,6 +22,7 @@ import { authGuard, guestGuard } from './shared/guards/auth.guard';
 import { ComponentTypesComponent } from './pages/component-types-main/component-types.component';
 import { MetadataRegistryComponent } from './pages/metadata-registry/metadata-registry.component';
 import { UserRolesComponent } from './pages/user-roles/user-roles.component';
+import { MenuGroupsComponent } from './pages/menu-groups/menu-groups.component';
 
 export const routes: Routes = [
   {
@@ -55,6 +56,11 @@ export const routes: Routes = [
         path:'roles',
         component:UserRolesComponent,
         title:'User Roles Management'
+      },
+      {
+        path:'menu-groups',
+        component:MenuGroupsComponent,
+        title:'Menu Groups Management'
       },
       {
         path:'calendar',

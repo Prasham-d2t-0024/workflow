@@ -881,5 +881,5 @@ pre[class*="language-"].line-numbers {
 
 .notyf{
   top: 60px !important;
-  z-index: 9999 !important;
+  z-index: 9999999 !important;
 }
