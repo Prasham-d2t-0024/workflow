@@ -1,3 +1,5 @@
+<!-- ===== COMMENTED OUT - OLD TABLE IMPLEMENTATION ===== -->
+<!--
 <div class="rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
     <div class="flex flex-col gap-2 px-5 mb-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div>
@@ -82,7 +84,7 @@
                                 </svg>
                             </button>
                         </td>
-                        <!-- <td class="px-4 py-4 text-gray-700 text-theme-sm dark:text-gray-400">
+                         <td class="px-4 py-4 text-gray-700 text-theme-sm dark:text-gray-400">
                             {{ item.amount }}
                         </td>
                         <td class="px-4 py-4 text-gray-700 text-theme-sm dark:text-gray-400">
@@ -118,7 +120,7 @@
                                     </div>
                                 </app-table-dropdown>
                             </div>
-                        </td> -->
+                        </td>
                     </tr>
                     }
                     @if (!currentItems || currentItems.length === 0) {
@@ -133,11 +135,9 @@
         </div>
     </div>
 
-    <!-- Pagination Controls -->
     @if (currentItems && currentItems.length) {
         <div class="px-6 py-4 border-t border-gray-200 dark:border-white/[0.05]">
             <div class="flex items-center justify-between">
-                <!-- Previous Button -->
                 <app-button size="sm" variant="outline" (btnClick)="goToPage(currentPage - 1)"
                     [disabled]="currentPage === 1">
                     <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none"
@@ -148,11 +148,9 @@
                     </svg>
                     <span class="hidden sm:inline">Previous</span>
                 </app-button>
-                <!-- Page Info -->
                 <span class="block text-sm font-medium text-gray-700 dark:text-gray-400 sm:hidden">
                     Page {{ currentPage }} of {{ totalPages }}
                 </span>
-                <!-- Page Numbers -->
                 <ul class="hidden items-center gap-0.5 sm:flex">
                     @for (page of [].constructor(totalPages); track $index; let idx = $index) {
                     <li>
@@ -167,7 +165,6 @@
                     </li>
                     }
                 </ul>
-                <!-- Next Button -->
                 <app-button (btnClick)="goToPage(currentPage + 1)" size="sm" variant="outline"
                     [disabled]="currentItems && currentItems.length < 2">
                     <span class="hidden sm:inline">Next</span>
@@ -181,7 +178,24 @@
             </div>
         </div>
     }
-</div>
+</div> !-->
+
+<!-- ===== END COMMENTED OUT - OLD TABLE IMPLEMENTATION ===== -->
+
+<!-- ===== NEW DATATABLE IMPLEMENTATION ===== -->
+<app-datatable
+  [columns]="componentTypeColumns"
+  [data]="componentTypes"
+  [actions]="componentTypeActions"
+  [headerConfig]="headerConfig"
+  (btnClickTrigger)="openAddComponentTypeModal()"
+  [config]="{
+    pageSize: 10,
+    showSearch: true,
+    showPagination: true
+  }">
+</app-datatable>
+<!-- ===== END NEW DATATABLE IMPLEMENTATION ===== -->
 
 <!-- Add component Type Modal -->
 <app-modal 

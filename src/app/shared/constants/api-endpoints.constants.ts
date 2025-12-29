@@ -1,5 +1,9 @@
 
 
 export const ApiEndpointsConsts = {
-    LOGIN : '/auth/login'
+    LOGIN : '/auth/login',
+    COMPONENTTYPES:'/componenttypes',
+    MENU_GROUPS:'/menu-groups',
+    METADATA_REGISTRY:'/metadata-registries',
+    ROLES:'/roles',
 }

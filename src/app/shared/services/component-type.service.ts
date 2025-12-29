@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
+import { ApiEndpointsConsts } from '../constants/api-endpoints.constants';
 
 export interface ComponentType {
   component_type_id: number;
@@ -12,7 +13,7 @@ export interface ComponentType {
   providedIn: 'root'
 })
 export class ComponentTypeService {
-
+  private endpoint = ApiEndpointsConsts.COMPONENTTYPES;
   constructor(private apiService: ApiService) { }
 
   /**
@@ -20,7 +21,7 @@ export class ComponentTypeService {
    * @returns Observable<ComponentType[]>
    */
   getComponentTypes(): Observable<ComponentType[]> {
-    return this.apiService.get('/componenttypes', {}, true).pipe(
+    return this.apiService.get(this.endpoint, {}, true).pipe(
       map((data: any) => {
         return data.map((item: any) => ({
           id: item.component_type_id || item._component_type_id || '',
@@ -36,7 +37,7 @@ export class ComponentTypeService {
    * @returns Observable<ComponentType>
    */
   getComponentTypeById(id: string): Observable<ComponentType> {
-    return this.apiService.get(`/componenttypes/${id}`, {}, true);
+    return this.apiService.get(`${this.endpoint}/${id}`, {}, true);
   }
 
   /**
@@ -45,7 +46,7 @@ export class ComponentTypeService {
    * @returns Observable<any>
    */
   createComponentType(payload: { name: string }): Observable<any> {
-    return this.apiService.post('/componenttypes', payload, true);
+    return this.apiService.post(this.endpoint, payload, true);
   }
 
   /**
@@ -55,7 +56,7 @@ export class ComponentTypeService {
    * @returns Observable<any>
    */
   updateComponentType(id: string, payload: { name: string }): Observable<any> {
-    return this.apiService.put(`/componenttypes/${id}`, payload, true);
+    return this.apiService.put(`${this.endpoint}/${id}`, payload, true);
   }
 
   /**
@@ -64,6 +65,6 @@ export class ComponentTypeService {
    * @returns Observable<any>
    */
   deleteComponentType(id: string): Observable<any> {
-    return this.apiService.delete(`/componenttypes/${id}`, true);
+    return this.apiService.delete(`${this.endpoint}/${id}`, true);
   }
 }

@@ -7,14 +7,15 @@ import {
 } from '@angular/core';
 import { DataTableColumn, DataTableAction, DataTableConfig, DataTableHeaderButton, DataTableHeaderConfig } from './data-table.models';
 import { FormsModule, NgModel } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import { ButtonComponent } from '../../ui/button/button.component';
+import { UtilityService } from '../../../services/utility.service';
 
 @Component({
   selector: 'app-datatable',
   standalone: true,
   templateUrl: './data-table.component.html',
-  imports: [CommonModule, FormsModule, ButtonComponent],
+  imports: [CommonModule, FormsModule, ButtonComponent, JsonPipe],
 })
 export class DatatableComponent<T> implements OnChanges {
   @Input() columns: DataTableColumn<T>[] = [];
@@ -39,6 +40,10 @@ export class DatatableComponent<T> implements OnChanges {
   selected = new Set<T>();
 
   headerButtons:any[] = [];
+
+  constructor(
+    public utilityService : UtilityService
+  ){}
 
   ngOnChanges() {
     const defaultSize = this.config.pageSize ?? this.pageSizeOptions[0];

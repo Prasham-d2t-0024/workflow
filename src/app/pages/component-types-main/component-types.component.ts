@@ -7,6 +7,8 @@ import { ApiService } from '../../shared/services/api.service';
 import { UtilityService } from '../../shared/services/utility.service';
 import { AlertComponent } from '../../shared/components/ui/alert/alert.component';
 import { NotificationService } from '../../shared/services/notification.service';
+import { DataTableAction, DataTableColumn, DataTableHeaderConfig } from '../../shared/components/tables/data-table/data-table.models';
+import { DatatableComponent } from '../../shared/components/tables/data-table/data-table.component';
 
 interface componentType {
   component_type_id: number;
@@ -14,6 +16,7 @@ interface componentType {
   createdAt: string;
   publishedAt: string;
   updatedAt: string;
+  status: 'active' | 'inactive';
 }
 @Component({
   selector: 'app-component-types',
@@ -23,6 +26,7 @@ interface componentType {
     ButtonComponent,
     ModalComponent,
     AlertComponent,
+    DatatableComponent,
   ],
   templateUrl: './component-types.component.html',
     styleUrl: './component-types.component.css'
@@ -31,8 +35,84 @@ interface componentType {
 export class ComponentTypesComponent implements OnInit{
 
   componentTypes:componentType[] = []; 
-  currentPage = 1;
-  itemsPerPage = 5;
+  
+  // DataTable Configuration
+  componentTypeColumns: DataTableColumn<any>[] = [
+    {
+      key: 'name',
+      label: 'Name',
+      sortable: true,
+      searchable: true,
+    },
+    {
+      key: 'createdAt',
+      label: 'Created At',
+      type: 'date',
+      sortable: false,
+    },
+    {
+      key: 'updatedAt',
+      label: 'Updated At',
+      type: 'date',
+      sortable: false,
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      type: 'badge',
+      badgeMap: {
+        active: {
+          label: 'Active',
+          color: 'bg-success-50 text-success-600',
+        },
+        inactive: {
+          label: 'Inactive',
+          color: 'bg-error-50 text-error-600',
+        },
+      },
+    },
+  ];
+  
+  componentTypeActions: DataTableAction<any>[] = [
+    {
+      icon: 'fa-solid fa-pencil',
+      handler: (row) => this.onEdit(row),
+    },
+    {
+      icon: 'fa-solid fa-trash',
+      handler: (row) => this.onDelete(row),
+    },
+  ];
+
+  headerConfig: DataTableHeaderConfig<any> = {
+    title: 'Component Types',
+    buttons: [
+      {
+        label: 'Add Component Type',
+        icon: 'fas fa-plus'
+      }
+    ]
+  };
+
+  /* ===== COMMENTED OUT - OLD PAGINATION LOGIC ===== */
+  // currentPage = 1;
+  // itemsPerPage = 5;
+  
+  // get totalPages(): number {
+  //   return Math.ceil(this.componentTypes.length / this.itemsPerPage);
+  // }
+
+  // get currentItems(): componentType[] {
+  //   const start = (this.currentPage - 1) * this.itemsPerPage;
+  //   return this.componentTypes.slice(start, start + this.itemsPerPage);
+  // }
+
+  // goToPage(page: number) {
+  //   if (page >= 1 && page <= this.totalPages) {
+  //     this.currentPage = page;
+  //   }
+  // }
+  /* ===== END COMMENTED OUT ===== */
   
   // Modal state
   isAddModalOpen = false;
@@ -42,15 +122,6 @@ export class ComponentTypesComponent implements OnInit{
   newComponentTypeName = '';
   editingComponentType: componentType | null = null;
   deletingComponentType: componentType | null = null;
-
-  get totalPages(): number {
-    return Math.ceil(this.componentTypes.length / this.itemsPerPage);
-  }
-
-  get currentItems(): componentType[] {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    return this.componentTypes.slice(start, start + this.itemsPerPage);
-  }
 
   constructor(
     private apiService:ApiService,
@@ -76,20 +147,25 @@ export class ComponentTypesComponent implements OnInit{
       createdAt: item.createdAt || '',
       publishedAt: item.publishedAt || '',
       updatedAt: item.updatedAt || '',
+      status: item.status || ''
     }));
   }
 
-  goToPage(page: number) {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-    }
-  }
+  /* ===== COMMENTED OUT - OLD PAGINATION METHOD ===== */
+  // goToPage(page: number) {
+  //   if (page >= 1 && page <= this.totalPages) {
+  //     this.currentPage = page;
+  //   }
+  // }
+  /* ===== END COMMENTED OUT ===== */
 
-  getBadgeColor(status: string): 'success' | 'warning' | 'error' {
-    if (status === 'Success') return 'success';
-    if (status === 'Pending') return 'warning';
-    return 'error';
-  }
+  /* ===== COMMENTED OUT - OLD BADGE COLOR METHOD (Not needed for new implementation) ===== */
+  // getBadgeColor(status: string): 'success' | 'warning' | 'error' {
+  //   if (status === 'Success') return 'success';
+  //   if (status === 'Pending') return 'warning';
+  //   return 'error';
+  // }
+  /* ===== END COMMENTED OUT ===== */
 
   // Modal functions
   openAddComponentTypeModal() {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { ApiService } from './api.service';
 import { NotificationService } from './notification.service';
+import { ApiEndpointsConsts } from '../constants/api-endpoints.constants';
 
 export interface Role {
   id: number;
@@ -18,11 +19,12 @@ export interface RoleCreatePayload {
 
 @Injectable({ providedIn: 'root' })
 export class RolesService {
+  endpoint = ApiEndpointsConsts.ROLES;
   constructor(private apiService: ApiService, private notification: NotificationService) {}
 
   // GET /roles
   getRoles(): Observable<Role[]> {
-    return this.apiService.get('/roles', {}, true).pipe(
+    return this.apiService.get(this.endpoint, {}, true).pipe(
       map((resp: any) => {
         const data = resp || [];
         return data.map((item: any) => this.mapToRole(item));
@@ -32,22 +34,22 @@ export class RolesService {
 
   // GET /roles/{id}
   getRoleById(id: number): Observable<Role> {
-    return this.apiService.get(`/roles/${id}`, {}, true).pipe(map((resp: any) => this.mapToRole(resp)));
+    return this.apiService.get(`${this.endpoint}/${id}`, {}, true).pipe(map((resp: any) => this.mapToRole(resp)));
   }
 
   // POST /roles
   createRole(payload: RoleCreatePayload): Observable<any> {
-    return this.apiService.post('/roles', payload, true);
+    return this.apiService.post(this.endpoint, payload, true);
   }
 
   // PUT /roles/{id} (only id required per instructions)
   updateRole(id: number, payload: RoleCreatePayload): Observable<any> {
-    return this.apiService.put(`/roles/${id}`, payload, true);
+    return this.apiService.put(`${this.endpoint}/${id}`, payload, true);
   }
 
   // DELETE /roles/{id}
   deleteRole(id: number): Observable<any> {
-    return this.apiService.delete(`/roles/${id}`, true);
+    return this.apiService.delete(`${this.endpoint}/${id}`, true);
   }
 
   private mapToRole(item: any): Role {

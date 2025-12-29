@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { ComponentTypeService, ComponentType } from './component-type.service';
 import { Option } from '../components/form/select/select.component';
+import { ApiEndpointsConsts } from '../constants/api-endpoints.constants';
 
 export interface MetadataRegistry {
   metadata_registry_id: number;
@@ -27,7 +28,7 @@ export interface MetadataRegistryPayload {
   providedIn: 'root'
 })
 export class MetadataRegistryService {
-
+  endpoint = ApiEndpointsConsts.METADATA_REGISTRY;
   constructor(
     private apiService: ApiService,
     private componentTypeService: ComponentTypeService
@@ -38,7 +39,7 @@ export class MetadataRegistryService {
    * @returns Observable<MetadataRegistry[]>
    */
   getMetadataRegistries(): Observable<MetadataRegistry[]> {
-    return this.apiService.get('/metadata-registries', {}, true).pipe(
+    return this.apiService.get(this.endpoint, {}, true).pipe(
       map((resp: any) => {
         const data = resp || [];
         return data.map((item: any) => ({
@@ -62,7 +63,7 @@ export class MetadataRegistryService {
    * @returns Observable<MetadataRegistry>
    */
   getMetadataRegistryById(id: number): Observable<MetadataRegistry> {
-    return this.apiService.get(`/metadata-registries/${id}`, {}, true);
+    return this.apiService.get(`${this.endpoint}/${id}`, {}, true);
   }
 
   /**
@@ -71,7 +72,7 @@ export class MetadataRegistryService {
    * @returns Observable<any>
    */
   createMetadataRegistry(payload: any): Observable<any> {
-    return this.apiService.post('/metadata-registries', payload, true);
+    return this.apiService.post(this.endpoint, payload, true);
   }
 
   /**
@@ -81,7 +82,7 @@ export class MetadataRegistryService {
    * @returns Observable<any>
    */
   updateMetadataRegistry(id: number, payload: any): Observable<any> {
-    return this.apiService.put(`/metadata-registries/${id}`, payload, true);
+    return this.apiService.put(`${this.endpoint}/${id}`, payload, true);
   }
 
   /**
@@ -90,7 +91,7 @@ export class MetadataRegistryService {
    * @returns Observable<any>
    */
   deleteMetadataRegistry(id: number): Observable<any> {
-    return this.apiService.delete(`/metadata-registries/${id}`, true);
+    return this.apiService.delete(`${this.endpoint}/${id}`, true);
   }
 
   /**
