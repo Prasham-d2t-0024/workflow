@@ -10,6 +10,8 @@ import { MetadataRegistryService, MetadataRegistry } from '../../shared/services
 import { ComponentType } from '../../shared/services/component-type.service';
 import { BadgeComponent } from '../../shared/components/ui/badge/badge.component';
 import { NotificationService } from '../../shared/services/notification.service';
+import { DataTableAction, DataTableColumn, DataTableHeaderConfig } from '../../shared/components/tables/data-table/data-table.models';
+import { DatatableComponent } from '../../shared/components/tables/data-table/data-table.component';
 
 @Component({
   selector: 'app-metadata-registry',
@@ -20,7 +22,8 @@ import { NotificationService } from '../../shared/services/notification.service'
     ModalComponent,
     AlertComponent,
     SelectComponent,
-    BadgeComponent],
+    BadgeComponent,
+    DatatableComponent],
   templateUrl: './metadata-registry.component.html',
   styleUrl: './metadata-registry.component.css'
 })
@@ -29,8 +32,90 @@ export class MetadataRegistryComponent {
   metadataRegistries: MetadataRegistry[] = []; 
   componentTypes: ComponentType[] = [];
   componentTypeOptions: Option[] = [];
-  currentPage = 1;
-  itemsPerPage = 5;
+  
+  /* ===== DATATABLE CONFIGURATION ===== */
+  metadataRegistryColumns: DataTableColumn<any>[] = [
+    {
+      key: 'title',
+      label: 'Title',
+      sortable: true,
+      searchable: true,
+    },
+    {
+      key: 'isrequired',
+      label: 'Required',
+      type: 'badge',
+      badgeMap: {
+        true: {
+          label: 'Yes',
+          color: 'bg-success-50 text-success-600',
+        },
+        false: {
+          label: 'No',
+          color: 'bg-error-50 text-error-600',
+        },
+      },
+    },
+    {
+      key: 'ismultiple',
+      label: 'Multiple',
+      type: 'badge',
+      badgeMap: {
+        true: {
+          label: 'Yes',
+          color: 'bg-success-50 text-success-600',
+        },
+        false: {
+          label: 'No',
+          color: 'bg-error-50 text-error-600',
+        },
+      },
+    },
+    {
+      key: 'componentType.name',
+      label: 'Component Type',
+      sortable: false,
+    },
+    {
+      key: 'createdAt',
+      label: 'Created At',
+      type: 'date',
+      sortable: false,
+    },
+    {
+      key: 'updatedAt',
+      label: 'Updated At',
+      type: 'date',
+      sortable: false,
+    },
+  ];
+
+  metadataRegistryActions: DataTableAction<any>[] = [
+    {
+      icon: 'fa-solid fa-pencil',
+      handler: (row) => this.onEdit(row),
+    },
+    {
+      icon: 'fa-solid fa-trash',
+      handler: (row) => this.onDelete(row),
+    },
+  ];
+
+  headerConfig: DataTableHeaderConfig<any> = {
+    title: 'Metadata Registry',
+    buttons: [
+      {
+        label: 'Add Metadata',
+        icon: 'fas fa-plus'
+      }
+    ]
+  };
+  /* ===== END DATATABLE CONFIGURATION ===== */
+
+  /* ===== COMMENTED OUT - OLD PAGINATION LOGIC ===== */
+  // currentPage = 1;
+  // itemsPerPage = 5;
+  /* ===== END COMMENTED OUT ===== */
   
   // Modal state
   isAddModalOpen = false;
@@ -47,14 +132,16 @@ export class MetadataRegistryComponent {
   editingMetadataRegistry: MetadataRegistry | null = null;
   deletingMetadataRegistry: MetadataRegistry | null = null;
 
-  get totalPages(): number {
-    return Math.ceil(this.metadataRegistries.length / this.itemsPerPage);
-  }
+  /* ===== COMMENTED OUT - OLD PAGINATION GETTERS ===== */
+  // get totalPages(): number {
+  //   return Math.ceil(this.metadataRegistries.length / this.itemsPerPage);
+  // }
 
-  get currentItems(): MetadataRegistry[] {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    return this.metadataRegistries.slice(start, start + this.itemsPerPage);
-  }
+  // get currentItems(): MetadataRegistry[] {
+  //   const start = (this.currentPage - 1) * this.itemsPerPage;
+  //   return this.metadataRegistries.slice(start, start + this.itemsPerPage);
+  // }
+  /* ===== END COMMENTED OUT ===== */
 
   constructor(
     private metadataRegistryService: MetadataRegistryService,
@@ -92,11 +179,13 @@ export class MetadataRegistryComponent {
     });
   }
 
-  goToPage(page: number) {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-    }
-  }
+  /* ===== COMMENTED OUT - OLD PAGINATION METHOD ===== */
+  // goToPage(page: number) {
+  //   if (page >= 1 && page <= this.totalPages) {
+  //     this.currentPage = page;
+  //   }
+  // }
+  /* ===== END COMMENTED OUT ===== */
 
   // Modal functions
   openAddMetadataRegistryModal() {

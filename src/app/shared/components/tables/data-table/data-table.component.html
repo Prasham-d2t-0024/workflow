@@ -77,22 +77,19 @@
             @switch (col.type) {
 
             @case ('badge') {
-              <p>
-                {{col.badgeMap?.[getValue(row, col) | json]}}
-              </p>
-            <span class="inline-flex rounded-full px-3 py-1 text-xs font-medium"
-              [ngClass]="col.badgeMap?.[getValue(row, col)]?.color">
-              {{ col.badgeMap?.[getValue(row, col)]?.label }}
-            </span>
-            }
+              <span class="inline-flex rounded-full px-3 py-1 text-xs font-medium"
+                [ngClass]="col.badgeMap?.[getValue(row, col)]?.color">
+                {{ col.badgeMap?.[getValue(row, col)]?.label }}
+              </span>
+              }
 
-            @case('date'){
-              {{ utilityService.formatDate(getValue(row, col) ?? '', 'medium') }}
-            }
+              @case('date'){
+                {{ utilityService.formatDate(getValue(row, col) ?? '', 'medium') }}
+              }
 
-            @default {
-            {{ col.formatter ? col.formatter(row) : getValue(row, col) }}
-            }
+              @default {
+              {{ col.formatter ? col.formatter(row) : getValue(row, col) }}
+              }
             }
           </td>
           }

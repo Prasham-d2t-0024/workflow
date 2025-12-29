@@ -120,7 +120,17 @@ export class DatatableComponent<T> implements OnChanges {
   }
 
   getValue(row: T, col: DataTableColumn<T>) {
-    return (row as any)[col.key as string];
+    const keys = (col.key as string).split('.');
+    let value: any = row;
+    
+    for (const key of keys) {
+      value = value?.[key];
+      if (value === undefined || value === null) {
+        return 'N.A.';
+      }
+    }
+    
+    return value ?? 'N.A.';
   }
 
   pages(): number[] {

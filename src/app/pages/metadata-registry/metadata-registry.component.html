@@ -1,5 +1,5 @@
 <div class="rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
-    <div class="flex flex-col gap-2 px-5 mb-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <!-- <div class="flex flex-col gap-2 px-5 mb-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div>
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
                 Metadata Registry
@@ -29,8 +29,10 @@
                 </div>
             </form>
         </div>
-    </div>
+    </div> -->
 
+    <!-- ===== COMMENTED OUT - OLD TABLE IMPLEMENTATION ===== -->
+    <!--
     <div class="overflow-hidden">
         <div class="max-w-full px-5 overflow-x-auto sm:px-6">
             <table class="min-w-full">
@@ -54,9 +56,9 @@
                         <th class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
                             Updated At
                         </th>
-                        <!-- <th class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                        <th class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
                             Published At
-                        </th> -->
+                        </th>
                         <th class="px-4 py-3 font-normal text-gray-500 text-start text-theme-sm dark:text-gray-400">
                             Action
                         </th>
@@ -97,9 +99,9 @@
                         <td class="px-4 py-4 text-gray-700 whitespace-nowrap text-theme-sm dark:text-gray-400">
                             {{ utilityService.formatDate(item.updatedAt, 'medium') }}
                         </td>
-                        <!-- <td class="px-4 py-4 text-gray-700 whitespace-nowrap text-theme-sm dark:text-gray-400">
+                        <td class="px-4 py-4 text-gray-700 whitespace-nowrap text-theme-sm dark:text-gray-400">
                             {{ utilityService.formatDate(item.publishedAt, 'medium') }}
-                        </td> -->
+                        </td> 
                         <td class="px-4 py-4 text-gray-700 whitespace-nowrap text-theme-sm dark:text-gray-400">
                             <button (click)="onEdit(item)" class="mr-2" style="position: relative; bottom: 4px;">
                                 <i class="fa-solid fa-pencil text-gray-700 cursor-pointer size-5 hover:text-error-500 dark:text-gray-400 dark:hover:text-error-500"></i>
@@ -114,7 +116,7 @@
                                 </svg>
                             </button>
                         </td>
-                        <!-- <td class="px-4 py-4 text-gray-700 text-theme-sm dark:text-gray-400">
+                        <td class="px-4 py-4 text-gray-700 text-theme-sm dark:text-gray-400">
                             {{ item.amount }}
                         </td>
                         <td class="px-4 py-4 text-gray-700 text-theme-sm dark:text-gray-400">
@@ -151,7 +153,7 @@
                                 </app-table-dropdown>
                             </div>
                         </td> -->
-                    </tr>
+                    <!-- </tr>
                     }
                     @if (!currentItems || currentItems.length === 0) {
                     <tr>
@@ -163,13 +165,12 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    </div> -->
 
     <!-- Pagination Controls -->
-    @if (currentItems && currentItems.length) {
+    <!-- @if (currentItems && currentItems.length) {
         <div class="px-6 py-4 border-t border-gray-200 dark:border-white/[0.05]">
             <div class="flex items-center justify-between">
-                <!-- Previous Button -->
                 <app-button size="sm" variant="outline" (btnClick)="goToPage(currentPage - 1)"
                     [disabled]="currentPage === 1">
                     <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none"
@@ -180,11 +181,9 @@
                     </svg>
                     <span class="hidden sm:inline">Previous</span>
                 </app-button>
-                <!-- Page Info -->
                 <span class="block text-sm font-medium text-gray-700 dark:text-gray-400 sm:hidden">
                     Page {{ currentPage }} of {{ totalPages }}
                 </span>
-                <!-- Page Numbers -->
                 <ul class="hidden items-center gap-0.5 sm:flex">
                     @for (page of [].constructor(totalPages); track $index; let idx = $index) {
                     <li>
@@ -199,7 +198,6 @@
                     </li>
                     }
                 </ul>
-                <!-- Next Button -->
                 <app-button (btnClick)="goToPage(currentPage + 1)" size="sm" variant="outline"
                     [disabled]="currentItems && currentItems.length < 2">
                     <span class="hidden sm:inline">Next</span>
@@ -212,7 +210,24 @@
                 </app-button>
             </div>
         </div>
-    }
+    } -->
+    
+    <!-- ===== END COMMENTED OUT - OLD TABLE IMPLEMENTATION ===== -->
+
+    <!-- ===== NEW DATATABLE IMPLEMENTATION ===== -->
+    <app-datatable
+      [columns]="metadataRegistryColumns"
+      [data]="metadataRegistries"
+      [actions]="metadataRegistryActions"
+      [headerConfig]="headerConfig"
+      (btnClickTrigger)="openAddMetadataRegistryModal()"
+      [config]="{
+        pageSize: 10,
+        showSearch: true,
+        showPagination: true
+      }">
+    </app-datatable>
+    <!-- ===== END NEW DATATABLE IMPLEMENTATION ===== -->
 </div>
 
 <!-- Add Metadata Registry Modal -->
