@@ -46,14 +46,14 @@
 
             @case ('asc') {
             <!-- Ascending -->
-            <svg class="w-3.5 h-3.5 text-brand-500" viewBox="0 0 20 20" fill="currentColor">
+            <svg class="w-3.5 h-3.5 text-brand-500 inline" viewBox="0 0 20 20" fill="currentColor">
               <path d="M6 12l4-4 4 4H6z" />
             </svg>
             }
 
             @case ('desc') {
             <!-- Descending -->
-            <svg class="w-3.5 h-3.5 text-brand-500" viewBox="0 0 20 20" fill="currentColor">
+            <svg class="w-3.5 h-3.5 text-brand-500 inline" viewBox="0 0 20 20" fill="currentColor">
               <path d="M6 8h8l-4 4-4-4z" />
             </svg>
             }
@@ -85,6 +85,12 @@
 
               @case('date'){
                 {{ utilityService.formatDate(getValue(row, col) ?? '', 'medium') }}
+              }
+
+              @case('icon'){
+                <span class="cursor-pointer" [title]="getValue(row, col)">
+                  <i [class]="getValue(row, col)"></i>
+                </span>
               }
 
               @default {

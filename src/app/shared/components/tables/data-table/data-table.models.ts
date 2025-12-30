@@ -4,7 +4,7 @@ export interface DataTableColumn<T = any> {
   sortable?: boolean;
   searchable?: boolean;
   width?: string;
-  type?: 'text' | 'date' | 'badge' | 'currency' | 'custom';
+  type?: 'text' | 'date' | 'badge' | 'currency' | 'custom' | 'icon';
   badgeMap?: Record<string, { label: string; color: string }>;
   formatter?: (row: T) => string;
 }

@@ -23,6 +23,7 @@ import { ComponentTypesComponent } from './pages/component-types-main/component-
 import { MetadataRegistryComponent } from './pages/metadata-registry/metadata-registry.component';
 import { UserRolesComponent } from './pages/user-roles/user-roles.component';
 import { MenuGroupsComponent } from './pages/menu-groups/menu-groups.component';
+import { MenusComponent } from './pages/menus/menus.component';
 
 export const routes: Routes = [
   {
@@ -61,6 +62,11 @@ export const routes: Routes = [
         path:'menu-groups',
         component:MenuGroupsComponent,
         title:'Menu Groups Management'
+      },
+      {
+        path:'menus',
+        component:MenusComponent,
+        title:'Menus Management'
       },
       {
         path:'calendar',
