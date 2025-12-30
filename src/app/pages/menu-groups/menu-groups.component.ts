@@ -7,23 +7,51 @@ import { AlertComponent } from '../../shared/components/ui/alert/alert.component
 import { BadgeComponent } from '../../shared/components/ui/badge/badge.component';
 import { MenuGroupsService, MenuGroup, MenuGroupPayload } from '../../shared/services/menu-groups.service';
 import { NotificationService } from '../../shared/services/notification.service';
+import { DataTableAction, DataTableColumn, DataTableHeaderConfig } from '../../shared/components/tables/data-table/data-table.models';
+import { DatatableComponent } from '../../shared/components/tables/data-table/data-table.component';
 
 @Component({
   selector: 'app-menu-groups',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, ModalComponent, AlertComponent, BadgeComponent],
+  imports: [CommonModule, FormsModule, ButtonComponent, ModalComponent, AlertComponent, BadgeComponent, DatatableComponent],
   templateUrl: './menu-groups.component.html',
   styleUrl: './menu-groups.component.css'
 })
 export class MenuGroupsComponent {
   groups: MenuGroup[] = [];
 
-  currentPage = 1;
-  itemsPerPage = 5;
+  menuGroupsColumns: DataTableColumn<any>[] = [
+    { key: 'name', label: 'Name', sortable: true, searchable: true },
+    { key: 'order', label: 'Order', sortable: true, searchable: false },
+    { key: 'status', label: 'Status', type: 'badge', badgeMap: { active: {label: 'Active', color: 'bg-success-50 text-success-600'}, inactive: {label: 'Inactive', color: 'bg-error-50 text-error-600'} } }
+  ];
+
+  menuGroupsActions: DataTableAction<any>[] = [
+    { icon: 'fa-solid fa-pencil', handler: (row: any) => this.onEdit(row) },
+    { icon: 'fa-solid fa-trash', handler: (row: any) => this.onDelete(row) }
+  ];
+
+  headerConfig: DataTableHeaderConfig<any> = {
+    title: 'Menu Groups',
+    buttons : [
+      {
+        label:'Add Group',
+        icon:'fas fa-plus'
+      }
+    ]
+  };
+
+  /* ===== COMMENTED OUT - OLD PAGINATION PROPERTIES ===== */
+  // currentPage = 1;
+  // itemsPerPage = 5;
 
   isAddModalOpen = false;
   isEditModalOpen = false;
   isDeleteModalOpen = false;
+
+  openAddMenuGroupModal() {
+    this.openAddModal();
+  }
 
   formName = '';
   formOrder: number | null = null;
@@ -38,24 +66,29 @@ export class MenuGroupsComponent {
     this.load();
   }
 
-  get totalPages(): number {
-    return Math.ceil(this.groups.length / this.itemsPerPage);
-  }
+  /* ===== COMMENTED OUT - OLD PAGINATION METHODS ===== */
+  // get totalPages(): number {
+  //   return Math.ceil(this.groups.length / this.itemsPerPage);
+  // }
 
-  get currentItems(): MenuGroup[] {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    return this.groups.slice(start, start + this.itemsPerPage);
-  }
+  // get currentItems(): MenuGroup[] {
+  //   const start = (this.currentPage - 1) * this.itemsPerPage;
+  //   return this.groups.slice(start, start + this.itemsPerPage);
+  // }
 
-  goToPage(page: number) {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-    }
-  }
+  // goToPage(page: number) {
+  //   if (page >= 1 && page <= this.totalPages) {
+  //     this.currentPage = page;
+  //   }
+  // }
+  /* ===== END COMMENTED OUT ===== */
 
   getBadgeColor(status: 'active' | 'inactive'): 'success' | 'error' {
     return status === 'active' ? 'success' : 'error';
   }
+
+  /* ===== COMMENTED OUT - OLD BADGE COLOR METHOD (now using DataTable badgeMap) ===== */
+  /* ===== END COMMENTED OUT ===== */
 
   load() {
     this.service.getMenuGroups().subscribe({
