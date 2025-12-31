@@ -19,6 +19,7 @@ export interface Menu {
 })
 export class MenusService {
   private endpoint = ApiEndpointsConsts.MENUS;
+  private roleMenuEndPoint = ApiEndpointsConsts.ROLE_MENU
 
   constructor(private apiService: ApiService) { }
 
@@ -44,8 +45,8 @@ export class MenusService {
    * @param payload Menu data
    * @returns Observable<any>
    */
-  createMenu(payload: Menu): Observable<any> {
-    return this.apiService.post(this.endpoint, payload, true);
+  createMenu(payload: any): Observable<any> {
+    return this.apiService.post(this.roleMenuEndPoint, payload, true);
   }
 
   /**
@@ -55,7 +56,7 @@ export class MenusService {
    * @returns Observable<any>
    */
   updateMenu(id: string, payload: Menu): Observable<any> {
-    return this.apiService.put(`${this.endpoint}/${id}`, payload, true);
+    return this.apiService.put(`${this.roleMenuEndPoint}/${id}`, payload, true);
   }
 
   /**

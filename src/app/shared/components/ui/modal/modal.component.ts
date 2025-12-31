@@ -25,7 +25,8 @@ export class ModalComponent {
   @Input() className = '';
   @Input() showCloseButton = true;
   @Input() isFullscreen = false;
-
+  @Input() size: number | null = null; // Width in pixels
+  minWidth:number = 450;
   constructor(private el: ElementRef) {}
 
   ngOnInit() {
@@ -44,7 +45,7 @@ export class ModalComponent {
 
   onBackdropClick(event: MouseEvent) {
     if (!this.isFullscreen) {
-      this.close.emit();
+      // this.close.emit();
     }
   }
 

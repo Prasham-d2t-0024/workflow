@@ -13,7 +13,7 @@
 </app-datatable>
 
 <!-- Add Menu Modal -->
-<app-modal [isOpen]="isAddModalOpen" (close)="closeAddMenuModal()" [title]="'Add Menu'" className="max-w-md">
+<app-modal [isOpen]="isAddModalOpen" (close)="closeAddMenuModal()" [title]="'Add Menu'" className="max-w-md" [size]="550">
     <div class="p-6">
         <!-- Modal Heading -->
         <h2 class="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">
@@ -58,15 +58,42 @@
                 <!-- Icon Preview -->
                 @if (formIcon.trim()) {
                 <div
-                    class="flex items-center justify-center w-12 h-11 rounded-lg border border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
+                    class="flex items-center justify-center w-12 h-10 rounded-lg border border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
                     <i [class]="formIcon" class="text-xl text-gray-700 dark:text-gray-300"></i>
                 </div>
                 }
             </div>
         </div>
 
+        <!-- Menu Group Dropdown -->
+        <div class="mb-4">
+            <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+                Menu Group
+            </label>
+            <select [(ngModel)]="formMenuGroupId" class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs
+               focus:border-brand-300 focus:outline-hidden
+               focus:ring-3 focus:ring-brand-500/10
+               dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+               dark:focus:border-brand-800">
+                <option [value]="null">Select Menu Group</option>
+                @for (group of menuGroups; track group.id) {
+                    <option [value]="group.id">{{ group.name }}</option>
+                }
+            </select>
+        </div>
+
+        <!-- Role Multi-Select -->
+        <div class="mb-4">
+            <app-multi-select
+                [label]="'Roles'"
+                [options]="roleOptions"
+                [defaultSelected]="formRoleIds"
+                (selectionChange)="formRoleIds = $event">
+            </app-multi-select>
+        </div>
+
         <!-- Status Field -->
-        <div class="mb-6">
+        <div class="mb-4">
             <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
                 Status
             </label>
@@ -144,13 +171,41 @@
 
                 <!-- Icon Preview -->
                 @if (formIcon?.trim()) {
-                <div class="flex items-center justify-center w-12 h-12 rounded-lg border
+                <div class="flex items-center justify-center w-12 h-11 rounded-lg border
                    border-gray-300 bg-gray-50 shadow-theme-xs
                    dark:border-gray-700 dark:bg-gray-800">
                     <i [class]="formIcon" class="text-lg text-gray-700 dark:text-gray-300"></i>
                 </div>
                 }
             </div>
+        </div>
+
+        <!-- Menu Group Dropdown -->
+        <div class="mb-4">
+            <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+                Menu Group
+            </label>
+            <select [(ngModel)]="formMenuGroupId" class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm
+               text-gray-800 shadow-theme-xs
+               focus:border-brand-300 focus:outline-hidden
+               focus:ring-3 focus:ring-brand-500/10
+               dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+               dark:focus:border-brand-800">
+                <option [value]="null">Select Menu Group</option>
+                @for (group of menuGroups; track group.id) {
+                    <option [value]="group.id">{{ group.name }}</option>
+                }
+            </select>
+        </div>
+
+        <!-- Roles Multi-Select -->
+        <div class="mb-6">
+            <app-multi-select 
+                [label]="'Roles'" 
+                [options]="roleOptions" 
+                [defaultSelected]="formRoleIds" 
+                (selectionChange)="formRoleIds = $event">
+            </app-multi-select>
         </div>
 
         <!-- Status Field -->

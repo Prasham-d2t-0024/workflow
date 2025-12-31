@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, SimpleChange } from '@angular/core';
+import {get} from 'lodash';
 
 export interface Option {
   value: string;
@@ -27,6 +28,11 @@ export class MultiSelectComponent {
 
   ngOnInit() {
     this.selectedOptions = [...this.defaultSelected];
+  }
+  ngOnChanges(changes:SimpleChange):void {
+    if(get(changes,['defaultSelected'],[])){
+      this.selectedOptions = [...this.defaultSelected];
+    }
   }
 
   toggleDropdown() {

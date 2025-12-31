@@ -10,12 +10,13 @@ import { FormsModule, NgModel } from '@angular/forms';
 import { CommonModule, JsonPipe } from '@angular/common';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { UtilityService } from '../../../services/utility.service';
+import { MultiSelectComponent } from '../../form/multi-select/multi-select.component';
 
 @Component({
   selector: 'app-datatable',
   standalone: true,
   templateUrl: './data-table.component.html',
-  imports: [CommonModule, FormsModule, ButtonComponent, JsonPipe],
+  imports: [CommonModule, FormsModule, ButtonComponent, JsonPipe, MultiSelectComponent],
 })
 export class DatatableComponent<T> implements OnChanges {
   @Input() columns: DataTableColumn<T>[] = [];

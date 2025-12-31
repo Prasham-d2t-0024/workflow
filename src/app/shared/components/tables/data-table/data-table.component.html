@@ -8,13 +8,13 @@
     </h3>
     <div class="flex gap-3">
       @if(headerButtons.length){
-      @for(btn of headerButtons; track btn.label){
-      <app-button [variant]="'primary'" [size]="'md'" (btnClick)="clickBtnTrigger()"
-        class="inline-flex items-center gap-2">
-        <i [class]="btn.icon"></i>
-        {{btn?.label}}
-      </app-button>
-      }
+        @for(btn of headerButtons; track btn.label){
+        <app-button [variant]="'primary'" [size]="'md'" (btnClick)="clickBtnTrigger()"
+          class="inline-flex items-center gap-2">
+          <i [class]="btn.icon"></i>
+          {{btn?.label}}
+        </app-button>
+        }
       }
 
       @if (config.showSearch !== false) {
@@ -37,26 +37,26 @@
               {{ col.label }}&nbsp;&nbsp;
             </span>
             @switch (sortIcon(col)) {
-            @case ('neutral') {
-            <!-- Neutral (sortable but inactive) -->
-            <svg class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 inline" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M6 8l4-4 4 4H6zm0 4h8l-4 4-4-4z" />
-            </svg>
-            }
+              @case ('neutral') {
+              <!-- Neutral (sortable but inactive) -->
+              <svg class="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 inline" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M6 8l4-4 4 4H6zm0 4h8l-4 4-4-4z" />
+              </svg>
+              }
 
-            @case ('asc') {
-            <!-- Ascending -->
-            <svg class="w-3.5 h-3.5 text-brand-500 inline" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M6 12l4-4 4 4H6z" />
-            </svg>
-            }
+              @case ('asc') {
+              <!-- Ascending -->
+              <svg class="w-3.5 h-3.5 text-brand-500 inline" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M6 12l4-4 4 4H6z" />
+              </svg>
+              }
 
-            @case ('desc') {
-            <!-- Descending -->
-            <svg class="w-3.5 h-3.5 text-brand-500 inline" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M6 8h8l-4 4-4-4z" />
-            </svg>
-            }
+              @case ('desc') {
+              <!-- Descending -->
+              <svg class="w-3.5 h-3.5 text-brand-500 inline" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M6 8h8l-4 4-4-4z" />
+              </svg>
+              }
             }
           </th>
           }
@@ -76,32 +76,43 @@
           <td class="px-6 py-3.5 text-theme-sm text-gray-700 dark:text-gray-400 font-medium">
             @switch (col.type) {
 
-            @case ('badge') {
-              <span class="inline-flex rounded-full px-3 py-1 text-xs font-medium"
-                [ngClass]="col.badgeMap?.[getValue(row, col)]?.color">
-                {{ col.badgeMap?.[getValue(row, col)]?.label }}
-              </span>
-              }
-
-              @case('date'){
-                {{ utilityService.formatDate(getValue(row, col) ?? '', 'medium') }}
-              }
-
-              @case('icon'){
-                <span class="cursor-pointer" [title]="getValue(row, col)">
-                  <i [class]="getValue(row, col)"></i>
+              @case ('badge') {
+                <span class="inline-flex rounded-full px-3 py-1 text-xs font-medium"
+                  [ngClass]="col.badgeMap?.[getValue(row, col)]?.color">
+                  {{ col.badgeMap?.[getValue(row, col)]?.label }}
                 </span>
-              }
+                }
 
-              @default {
-              {{ col.formatter ? col.formatter(row) : getValue(row, col) }}
+                @case('date'){
+                  {{ utilityService.formatDate(getValue(row, col) ?? '', 'medium') }}
+                }
+
+                @case('icon'){
+                  <span class="cursor-pointer" [title]="getValue(row, col)">
+                    <i [class]="getValue(row, col)"></i>
+                  </span>
+                }
+
+                @case('multiselect'){
+                  @if (col.allOptions && col.allOptions.length > 0) {
+                    <app-multi-select 
+                      [label]="''" 
+                      [options]="col.allOptions"
+                      [defaultSelected]="getValue(row, col)"
+                      [disabled]="true">
+                    </app-multi-select>
+                  }
+                }
+
+                @default {
+                  {{ col.formatter ? col.formatter(row) : getValue(row, col) }}
+                }
               }
-            }
           </td>
           }
 
           <!-- Actions -->
-          <td class="px-6 py-3.5 text-left">
+          <td class="px-6 py-3.5 text-left flex">
             <button *ngFor="let action of actions" (click)="action.handler(row)"
               class="text-gray-500 hover:text-gray-800 dark:hover:text-white border p-2 rounded-md mr-2">
               <i [class]="action.icon"></i>
