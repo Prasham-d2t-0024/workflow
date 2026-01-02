@@ -2,7 +2,7 @@
   <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
     {{ label }}
   </label>
-  <div class="relative z-20 inline-block w-full">
+  <div class="relative inline-block w-full">
     <div class="relative flex flex-col items-center">
       <div (click)="toggleDropdown()" class="w-full">
         <div class="flex h-11 rounded-lg border border-gray-300 py-1.5 pl-3 pr-0 shadow-theme-xs outline-hidden transition focus:border-brand-300 focus:shadow-focus-ring dark:border-gray-700 dark:bg-gray-900 dark:focus:border-brand-300">
@@ -34,7 +34,7 @@
             } @else {
               <input
                 placeholder="Select option"
-                class="w-full h-full p-1 pr-2 text-sm bg-transparent border-0 outline-hidden appearance-none placeholder:text-gray-800 focus:border-0 focus:outline-hidden focus:ring-0 dark:placeholder:text-white/90"
+                class="w-full h-full p-1 pr-2 text-sm bg-transparent border-0 outline-hidden appearance-none placeholder:text-gray-800 focus:border-0 focus:outline-hidden focus:ring-0 dark:placeholder:text-white/90 cursor-pointer"
                 readonly
                 value="Select option"
               />
@@ -44,7 +44,7 @@
             <div class="flex items-center py-1 pl-1 pr-1 w-7">
               <button
                 type="button"
-                (click)="toggleDropdown()"
+                (click)="toggleDropdown($event)"
                 class="w-5 h-5 text-gray-700 outline-hidden cursor-pointer focus:outline-hidden dark:text-gray-400"
               >
                 <svg

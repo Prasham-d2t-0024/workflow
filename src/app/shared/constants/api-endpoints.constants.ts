@@ -8,4 +8,5 @@ export const ApiEndpointsConsts = {
     ROLES:'/roles',
     MENUS:'/menus',
     ROLE_MENU:'/role-menus',
+    USERS:'/users',
 }

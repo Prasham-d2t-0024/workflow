@@ -1,0 +1,220 @@
+<!-- DataTable with header -->
+<app-datatable 
+    [columns]="usersColumns" 
+    [data]="users" 
+    [actions]="usersActions" 
+    [headerConfig]="headerConfig"
+    (btnClickTrigger)="openAddUserModal()" 
+    [config]="{
+        pageSize: 5,
+        showSearch: true,
+        showPagination: true
+        }">
+</app-datatable>
+
+<!-- Add User Modal -->
+<app-modal [isOpen]="isAddModalOpen" (close)="closeAddUserModal()" [title]="'Add User'" className="max-w-md" [size]="550">
+    <div class="p-6">
+        <!-- Modal Heading -->
+        <h2 class="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">
+            Add User
+        </h2>
+
+        <!-- Full Name Field -->
+        <div class="mb-4">
+            <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+                Full Name
+            </label>
+            <input type="text" [(ngModel)]="formFullName" placeholder="Enter full name" class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs
+               placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden
+               focus:ring-3 focus:ring-brand-500/10
+               dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+               dark:placeholder:text-white/30 dark:focus:border-brand-800" />
+        </div>
+
+        <!-- Username Field -->
+        <div class="mb-4">
+            <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+                Username
+            </label>
+            <input type="text" [(ngModel)]="formUsername" placeholder="Enter username" class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs
+               placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden
+               focus:ring-3 focus:ring-brand-500/10
+               dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+               dark:placeholder:text-white/30 dark:focus:border-brand-800" />
+        </div>
+
+        <!-- Password Field -->
+        <div class="mb-4">
+            <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+                Password
+            </label>
+            <input type="password" [(ngModel)]="formPassword" placeholder="Enter password" class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs
+               placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden
+               focus:ring-3 focus:ring-brand-500/10
+               dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+               dark:placeholder:text-white/30 dark:focus:border-brand-800" />
+        </div>
+
+        <!-- Roles Multi-Select -->
+        <div class="mb-4">
+            <app-multi-select
+                [label]="'Roles'"
+                [options]="roleOptions"
+                [defaultSelected]="formRoleIds"
+                (selectionChange)="formRoleIds = $event">
+            </app-multi-select>
+        </div>
+
+        <!-- Menus Multi-Select -->
+        <div class="mb-4">
+            <app-multi-select
+                [label]="'Menus'"
+                [options]="menuOptions"
+                [defaultSelected]="formMenuIds"
+                (selectionChange)="formMenuIds = $event">
+            </app-multi-select>
+        </div>
+
+        <!-- Footer Buttons -->
+        <div class="flex justify-end gap-3">
+            <app-button [variant]="'outline'" [size]="'md'" (btnClick)="closeAddUserModal()">
+                Cancel
+            </app-button>
+
+            <app-button [variant]="'primary'" [size]="'md'" [disabled]="isAddButtonDisabled()" (btnClick)="addUser()">
+                <i class="fas fa-plus mr-2"></i>
+                Add User
+            </app-button>
+        </div>
+    </div>
+</app-modal>
+
+
+<!-- Edit User Modal -->
+<app-modal [isOpen]="isEditModalOpen" (close)="closeEditUserModal()" [title]="'Edit User'" className="max-w-md" [size]="550">
+    <div class="p-6">
+        <!-- Modal Heading -->
+        <h2 class="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">
+            Edit User
+        </h2>
+
+        <!-- Full Name Field -->
+        <div class="mb-4">
+            <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+                Full Name
+            </label>
+            <input type="text" [(ngModel)]="formFullName" placeholder="Enter full name" class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm
+               text-gray-800 shadow-theme-xs placeholder:text-gray-400
+               focus:border-brand-300 focus:outline-hidden
+               focus:ring-3 focus:ring-brand-500/10
+               dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+               dark:placeholder:text-white/30 dark:focus:border-brand-800" />
+        </div>
+
+        <!-- Username Field -->
+        <div class="mb-4">
+            <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+                Username
+            </label>
+            <input type="text" [(ngModel)]="formUsername" placeholder="Enter username" class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm
+               text-gray-800 shadow-theme-xs placeholder:text-gray-400
+               focus:border-brand-300 focus:outline-hidden
+               focus:ring-3 focus:ring-brand-500/10
+               dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+               dark:placeholder:text-white/30 dark:focus:border-brand-800" />
+        </div>
+
+        <!-- Password Field (Optional for edit) -->
+        <div class="mb-4">
+            <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+                Password (Leave empty to keep current)
+            </label>
+            <input type="password" [(ngModel)]="formPassword" placeholder="Enter new password" class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm
+               text-gray-800 shadow-theme-xs placeholder:text-gray-400
+               focus:border-brand-300 focus:outline-hidden
+               focus:ring-3 focus:ring-brand-500/10
+               dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+               dark:placeholder:text-white/30 dark:focus:border-brand-800" />
+        </div>
+
+        <!-- Roles Multi-Select -->
+        <div class="mb-4">
+            <app-multi-select
+                [label]="'Roles'"
+                [options]="roleOptions"
+                [defaultSelected]="formRoleIds"
+                (selectionChange)="formRoleIds = $event">
+            </app-multi-select>
+        </div>
+
+        <!-- Menus Multi-Select -->
+        <div class="mb-6">
+            <app-multi-select
+                [label]="'Menus'"
+                [options]="menuOptions"
+                [defaultSelected]="formMenuIds"
+                (selectionChange)="formMenuIds = $event">
+            </app-multi-select>
+        </div>
+
+        <!-- Footer Buttons -->
+        <div class="flex justify-end gap-3">
+            <app-button [variant]="'outline'" [size]="'md'" (btnClick)="closeEditModal()">
+                Cancel
+            </app-button>
+
+            <app-button [variant]="'primary'" [size]="'md'" [disabled]="isEditButtonDisabled()"
+                (btnClick)="updateUser()">
+                <i class="fas fa-save mr-2"></i>
+                Save
+            </app-button>
+        </div>
+    </div>
+</app-modal>
+
+<!-- Delete Confirmation Modal -->
+<app-modal 
+  [isOpen]="isDeleteModalOpen"
+  (close)="closeDeleteModal()"
+  [title]="'Delete User'"
+  className="max-w-md"
+>
+  <div class="p-6">
+    <!-- Modal Heading -->
+    <h2 class="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">
+      Delete User
+    </h2>
+
+    <!-- Confirmation Text -->
+    <div class="mb-6 text-sm text-gray-700 dark:text-gray-300">
+      <p>
+        Are you sure you want to delete
+        <span class="font-semibold text-gray-900 dark:text-white">
+          {{ deletingUser?.full_name }}
+        </span>?
+      </p>
+    </div>
+
+    <!-- Footer Buttons -->
+    <div class="flex justify-end gap-3">
+      <app-button
+        [variant]="'outline'"
+        [size]="'md'"
+        (btnClick)="closeDeleteModal()"
+      >
+        Cancel
+      </app-button>
+
+      <app-button
+        [variant]="'primary'"
+        [size]="'md'"
+        (btnClick)="confirmDelete()"
+        class="bg-red-500 hover:bg-red-600 focus:ring-red-500/20"
+      >
+        <i class="fas fa-trash mr-2"></i>
+        Yes, Delete
+      </app-button>
+    </div>
+  </div>
+</app-modal>

@@ -22,7 +22,7 @@ export class MultiSelectComponent {
   @Input() defaultSelected: string[] = [];
   @Input() disabled: boolean = false;
   @Output() selectionChange = new EventEmitter<string[]>();
-
+  
   selectedOptions: string[] = [];
   isOpen = false;
 
@@ -35,8 +35,9 @@ export class MultiSelectComponent {
     }
   }
 
-  toggleDropdown() {
+  toggleDropdown(event?:Event) {
     if (!this.disabled) this.isOpen = !this.isOpen;
+    event?.stopPropagation();
   }
 
   handleSelect(optionValue: string) {
