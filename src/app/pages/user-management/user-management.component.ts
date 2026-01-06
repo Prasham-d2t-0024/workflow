@@ -304,8 +304,8 @@ export class UserManagementComponent implements OnInit {
   isAddButtonDisabled(): boolean {
     return this.formFullName.trim() === '' || 
            this.formUsername.trim() === '' || 
-           this.formPassword.trim() === '' || 
-           this.formUserTypeId === null;
+           this.formPassword.trim() === ''
+          //  this.formUserTypeId === null;
   }
 
   /**
@@ -318,7 +318,7 @@ export class UserManagementComponent implements OnInit {
       full_name: this.formFullName.trim(),
       username: this.formUsername.trim(),
       password: this.formPassword.trim(),
-      user_type_id: this.formUserTypeId!,
+      // user_type_id: this.formUserTypeId!,
       role_ids: this.formRoleIds.map(id => Number(id)),
       menu_ids: this.formMenuIds.map(id => Number(id)),
     };

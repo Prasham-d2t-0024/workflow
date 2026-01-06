@@ -164,7 +164,7 @@ export class MenusComponent implements OnInit {
       this.loadMenusAsync(),
       this.loadMenuGroupsAsync(),
       this.loadRolesAsync(),
-      this.loadAllMenuRolesAsync()
+      // this.loadAllMenuRolesAsync()
     ]).then(() => {
       // All data loaded successfully, update column options and map menus
       this.updateColumnOptions();
@@ -289,19 +289,22 @@ export class MenusComponent implements OnInit {
    * Map menu data with role names - enriches menu objects with role_names property
    */
   mapMenusWithRoles() {
-    this.menus = this.menus.map(menu => {
-      const rolesForMenu = this.menuRoles.get(menu.menu_id!) || [];
-      const roleNames = rolesForMenu.length > 0 
-        ? rolesForMenu.map(role => role.name).join(', ')
-        : '-';
-      const roleIds = rolesForMenu.map(role => String(role.id));
+    this.menus = this.menus.map((menu:any) => {
+      // const rolesForMenu = this.menuRoles.get(menu.menu_id!) || [];
+      // const roleNames = rolesForMenu.length > 0 
+      //   ? rolesForMenu.map(role => role.name).join(', ')
+      //   : '-';
+      // const roleIds = rolesForMenu.map(role => String(role.id));
       
+      const roleNames = menu?.roles.map((role:Role) => role.name).join(', ') || '-';
+      const roleIds = menu?.roles.map((role:any) => String(role?.role_id)) || [];
       return {
         ...menu,
         role_names: roleNames,
         role_ids: roleIds
       };
     });
+    console.log("Menus", this.menus);
   }
 
  resetForm() {

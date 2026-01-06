@@ -39,7 +39,7 @@ export interface UserCreatePayload {
   full_name: string;
   username: string;
   password: string;
-  user_type_id: number;
+  // user_type_id: number;
   role_ids: number[];
   menu_ids?: number[];
 }
