@@ -42,6 +42,12 @@ export class MetadataRegistryComponent {
       searchable: true,
     },
     {
+      key: 'key',
+      label: 'Key',
+      sortable: true,
+      searchable: true,
+    },
+    {
       key: 'isrequired',
       label: 'Required',
       type: 'badge',
@@ -125,6 +131,7 @@ export class MetadataRegistryComponent {
   
   // Form fields
   formTitle = '';
+  formKey = '';
   formIsRequired = false;
   formIsMultiple = false;
   formComponentType:any = '';
@@ -200,13 +207,14 @@ export class MetadataRegistryComponent {
 
   resetForm() {
     this.formTitle = '';
+    this.formKey = '';
     this.formIsRequired = false;
     this.formIsMultiple = false;
     this.formComponentType = '';
   }
 
   isAddButtonDisabled(): boolean {
-    return this.formTitle.trim() === '' || this.formComponentType === '';
+    return this.formTitle.trim() === '' || this.formKey.trim() === '' || this.formComponentType === '';
   }
 
   onComponentTypeChange(value: string) {
@@ -217,6 +225,7 @@ export class MetadataRegistryComponent {
   onEdit(item: MetadataRegistry) {
     this.editingMetadataRegistry = { ...item };
     this.formTitle = item.title;
+    this.formKey = item.key;
     this.formIsRequired = item.isrequired;
     this.formIsMultiple = item.ismultiple;
     this.formComponentType = String(item.componentType?.component_type_id || '');
@@ -230,13 +239,14 @@ export class MetadataRegistryComponent {
   }
 
   isEditButtonDisabled(): boolean {
-    return this.formTitle.trim() === '' || this.formComponentType === '';
+    return this.formTitle.trim() === '' || this.formKey.trim() === '' || this.formComponentType === '';
   }
 
   onSaveEdit() {
-    if (this.editingMetadataRegistry && this.formTitle.trim() && this.formComponentType) {
+    if (this.editingMetadataRegistry && this.formTitle.trim() && this.formKey.trim() && this.formComponentType) {
       const obj = {
-        key: this.formTitle.trim(),
+        title: this.formTitle.trim(),
+        key: this.formKey.trim(),
         isrequired: this.formIsRequired,
         ismultiple: this.formIsMultiple,
         componenttype_id: Number(this.formComponentType),
@@ -259,9 +269,10 @@ export class MetadataRegistryComponent {
   }
 
   onAddItem() {
-    if (this.formTitle.trim() && this.formComponentType) {
+    if (this.formTitle.trim() && this.formKey.trim() && this.formComponentType) {
       const obj = {
-        key: this.formTitle.trim(),
+        title:this.formTitle.trim(),
+        key: this.formKey.trim(),
         isrequired: this.formIsRequired,
         ismultiple: this.formIsMultiple,
         componenttype_id: Number(this.formComponentType)

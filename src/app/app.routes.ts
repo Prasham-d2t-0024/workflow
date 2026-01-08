@@ -25,6 +25,7 @@ import { UserRolesComponent } from './pages/user-roles/user-roles.component';
 import { MenuGroupsComponent } from './pages/menu-groups/menu-groups.component';
 import { MenusComponent } from './pages/menus/menus.component';
 import { UserManagementComponent } from './pages/user-management/user-management.component';
+import { ProcessesComponent } from './pages/processes/processes.component';
 
 export const routes: Routes = [
   {
@@ -73,6 +74,11 @@ export const routes: Routes = [
         path:'user-management',
         component:UserManagementComponent,
         title:'User Management'
+      },
+      {
+        path:'processes',
+        component:ProcessesComponent,
+        title:'Processes Management'
       },
       {
         path:'calendar',

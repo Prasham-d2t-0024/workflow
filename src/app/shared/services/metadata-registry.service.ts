@@ -9,6 +9,7 @@ import { ApiEndpointsConsts } from '../constants/api-endpoints.constants';
 export interface MetadataRegistry {
   metadata_registry_id: number;
   title: string;
+  key: string;
   isrequired: boolean;
   ismultiple: boolean;
   createdAt: string;
@@ -44,7 +45,8 @@ export class MetadataRegistryService {
         const data = resp || [];
         return data.map((item: any) => ({
           metadata_registry_id: item.metadata_registry_id || 0,
-          title: item.key || '',
+          title: item.title || '',
+          key: item.key || '',
           isrequired: item.isrequired || false,
           ismultiple: item.ismultiple || false,
           entity_name: item.entity_name || null,
