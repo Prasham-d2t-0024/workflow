@@ -5,6 +5,8 @@
       [actions]="metadataRegistryActions"
       [headerConfig]="headerConfig"
       (btnClickTrigger)="openAddMetadataRegistryModal()"
+      [reorderable]="true"
+      (rowOrderChange)="onRowOrderChange($event)"
       [config]="{
         pageSize: 10,
         showSearch: true,
@@ -57,9 +59,24 @@
                 [value]="formComponentType"
                 (valueChange)="onComponentTypeChange($event)"
                 placeholder="Select component type"
-                className="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800">
+                className="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800">
             </app-select>
         </div>
+
+        @if(showDropdownSelection){
+            <div class="mb-4">
+                <label for="addDropDown" class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+                    Dropdown Items
+                </label>
+                <app-select
+                    [options]="dropdowns"
+                    [value]="formDropdown"
+                    (valueChange)="onDropdownChange($event)"
+                    placeholder="Select Drop Down"
+                    className="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800">
+                </app-select>
+            </div>
+        }
         
         <div class="mb-4 flex items-center">
             <input 
@@ -109,7 +126,7 @@
     [showCloseButton]="true"
     className="max-w-md">
     <div class="p-6">
-        <h2 class="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">
+        <h2 class="mb-4 text-xl font-semibold dark:text-white/90">
             Edit Metadata Registry
         </h2>
         
@@ -122,7 +139,7 @@
                 id="editMetadataTitle"
                 [(ngModel)]="formTitle"
                 placeholder="Enter metadata title"
-                class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800" />
+                class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800" />
         </div>
         
         <div class="mb-4">
@@ -134,7 +151,7 @@
                 id="metadataKey"
                 [(ngModel)]="formKey"
                 placeholder="Enter metadata key"
-                class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800" />
+                class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm   shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800" />
         </div>
 
         <div class="mb-4">
@@ -146,9 +163,24 @@
                 [value]="formComponentType"
                 (valueChange)="onComponentTypeChange($event)"
                 placeholder="Select component type"
-                className="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800">
+                className="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800">
             </app-select>
         </div>
+
+        @if(showDropdownSelection){
+            <div class="mb-4">
+                <label for="editDropDown" class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+                    Dropdown Items
+                </label>
+                <app-select
+                    [options]="dropdowns"
+                    [value]="formDropdown"
+                    (valueChange)="onDropdownChange($event)"
+                    placeholder="Select Drop Down"
+                    className="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800">
+                </app-select>
+            </div>
+        }
         
         <div class="mb-4 flex items-center">
             <input 

@@ -9,4 +9,6 @@ export const ApiEndpointsConsts = {
     MENUS:'/menus',
     ROLE_MENU:'/role-menus',
     USERS:'/users',
+    METADATA_REGISTRY_VALUES:'/metadata-registry-values',
+    DROPDOWNS:'/dropdowns',
 }

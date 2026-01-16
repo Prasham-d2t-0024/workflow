@@ -136,7 +136,6 @@ export class ComponentTypesComponent implements OnInit{
   loadComponentTypes() {
     this.apiService.get('/componenttypes',{}, true).subscribe((data: any) => {
       this.componentTypes = this.mapComponentTypes(data);
-      console.log('Component Types:', this.componentTypes);
     });
   }
 
@@ -206,7 +205,6 @@ export class ComponentTypesComponent implements OnInit{
         true
       ).subscribe({
         next: (res) => {
-          console.log('Edit successful:', res);
           this.closeEditComponentTypeModal();
           this.loadComponentTypes();
           this.notificationService.success('Component Type updated successfully');

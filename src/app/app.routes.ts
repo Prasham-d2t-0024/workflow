@@ -26,6 +26,8 @@ import { MenuGroupsComponent } from './pages/menu-groups/menu-groups.component';
 import { MenusComponent } from './pages/menus/menus.component';
 import { UserManagementComponent } from './pages/user-management/user-management.component';
 import { ProcessesComponent } from './pages/processes/processes.component';
+import { FileCreationComponent } from './pages/file-creation/file-creation.component';
+import { DropdownManagementComponent } from './pages/dropdown-management/dropdown-management.component';
 
 export const routes: Routes = [
   {
@@ -79,6 +81,16 @@ export const routes: Routes = [
         path:'processes',
         component:ProcessesComponent,
         title:'Processes Management'
+      },
+      {
+        path:'file-creation',
+        component:FileCreationComponent,
+        title:'File Creation'
+      },
+      {
+        path:'dropdown-management',
+        component:DropdownManagementComponent,
+        title:'Dropdown Management'
       },
       {
         path:'calendar',

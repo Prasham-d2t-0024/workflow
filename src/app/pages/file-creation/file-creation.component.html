@@ -1,0 +1,259 @@
+<div>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      @for (metadata of metadataRegistries; track metadata.metadata_registry_id) {
+        <div class="space-y-2">
+          <!-- Label -->
+          <label class="text-sm font-medium text-gray-700 dark:text-gray-200">
+            {{ metadata.title }}
+            @if (metadata.isrequired) {
+              <span class="text-red-500">*</span>
+            }
+          </label>
+
+          <!-- MULTIPLE -->
+          @if (metadata.ismultiple) {
+            @if (getFormArray(metadata.metadata_registry_id); as formArray) {
+            <div [formArrayName]="metadata.metadata_registry_id" class="space-y-3">
+                @for (ctrl of formArray.controls; track $index; let i = $index, let last = $last) {
+                <div class="flex items-start gap-2 w-full">
+                  @switch (metadata.componentType?.name?.toLowerCase()) {
+                    @case ('text') {
+                      <!-- <P>{{form.get(metadata.metadata_registry_id.toString())?.invalid}}---{{
+                            form.get(metadata.metadata_registry_id.toString())?.touched}}</P> -->
+                      <input
+                        type="text"
+                        [formControlName]="i"
+                        placeholder="Enter {{ metadata.title }}"
+                         [ngClass]="{
+                            'border-red-500': ctrl.invalid && ctrl.touched,
+                            'border-gray-300': !(ctrl.invalid && ctrl.touched)
+                          }"
+                        class="flex-1 rounded-lg border bg-transparent py-2.5 px-4 text-sm"
+                      />
+                    }
+
+                    @case ('number') {
+                      <input
+                        type="number"
+                        min="1"
+                        [formControlName]="i"
+                        placeholder="Enter {{ metadata.title }}"
+                        [ngClass]="{
+                          'border-red-500':
+                            form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                            form.get(metadata.metadata_registry_id.toString())?.touched,
+                          'border-gray-300':
+                            !(form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                              form.get(metadata.metadata_registry_id.toString())?.touched)
+                        }"
+                        class="flex-1 rounded-lg border bg-transparent py-2.5 px-4 text-sm"
+                      />
+                    }
+
+                    @case ('dropdown') {
+                      <select
+                        [formControlName]="i"
+                        [ngClass]="{
+                          'border-red-500':
+                            form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                            form.get(metadata.metadata_registry_id.toString())?.touched,
+                          'border-gray-300':
+                            !(form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                              form.get(metadata.metadata_registry_id.toString())?.touched)
+                        }"
+                        class="h-11 w-full flex-1 appearance-none rounded-lg border bg-transparent
+                              px-4 py-2.5 pr-11 text-sm shadow-theme-xs
+                              border-gray-300 focus:border-brand-300 focus:outline-hidden
+                              focus:ring-3 focus:ring-brand-500/10
+                              dark:border-gray-700 dark:bg-gray-900 dark:text-white/90">
+
+                        <option [ngValue]="null">
+                          Select {{ metadata.title }}
+                        </option>
+
+                        @for (option of getOptionsFromId(metadata.dropdown?.dropdown_id); track $index) {
+                          <option [ngValue]="option.value">
+                            {{ option.label }}
+                          </option>
+                        }
+                      </select>
+                    }
+
+                    @default {
+                        <input
+                        type="text"
+                        [formControlName]="i"
+                        placeholder="Enter {{ metadata.title }}"
+                        [ngClass]="{
+                          'border-red-500':
+                            form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                            form.get(metadata.metadata_registry_id.toString())?.touched,
+                          'border-gray-300':
+                            !(form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                              form.get(metadata.metadata_registry_id.toString())?.touched)
+                        }"
+                        class="flex-1 rounded-lg border bg-transparent py-2.5 px-4 text-sm"
+                      />
+                    }
+                  }
+
+                  <!-- ADD MORE -->
+                  <!-- @if (i === getFormArray(metadata.metadata_registry_id).length - 1) {
+                    <button
+                      type="button"
+                      (click)="addMore(metadata)"
+                      class="px-3 py-2 text-sm text-brand-600 border rounded-lg">
+                      + Add
+                    </button>
+                  } -->
+
+                  <div class="flex items-center gap-2">
+                    <!-- ADD -->
+                    @if (i === getFormArray(metadata.metadata_registry_id).length - 1) {
+                      <button
+                        title="Add Value"
+                        type="button"
+                        (click)="addMore(metadata)"
+                        class="px-3 py-2 text-sm text-brand-600 border rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/20">
+                        <i class="fa-solid fa-plus text-primary"></i>
+                      </button>
+                    }
+
+                    <!-- DELETE -->
+                    @if ((getFormArray(metadata.metadata_registry_id).length > 1) && (i !== getFormArray(metadata.metadata_registry_id).length - 1)) {
+                      <button
+                        title="Remove Value"
+                        type="button"
+                        (click)="removeAt(metadata, i)"
+                        class="px-3 py-2 rounded-lg text-red-600 border hover:bg-red-50 dark:hover:bg-red-900/20"
+                        title="Remove">
+                        <!-- Trash Icon -->
+                        <i class="fas fa-trash text-danger"></i>
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+            }
+          } @else {
+            @switch (metadata.componentType?.name?.toLowerCase()) {
+              @case ('text') {
+                <input
+                  type="text"
+                  [formControlName]="metadata.metadata_registry_id"
+                  placeholder="Enter {{ metadata.title }}"
+                  [ngClass]="{
+                    'border-red-500':
+                      form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                      form.get(metadata.metadata_registry_id.toString())?.touched,
+                    'border-gray-300':
+                      !(form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                        form.get(metadata.metadata_registry_id.toString())?.touched)
+                  }"
+                  class="w-full rounded-lg border bg-transparent py-2.5 px-4 text-sm"
+                />
+              }
+              @case ('number') {
+                <!-- {{form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                  (form.get(metadata.metadata_registry_id.toString())?.touched)}} -->
+                <input
+                  type="number"
+                  min="1"
+                  [formControlName]="metadata.metadata_registry_id"
+                  placeholder="Enter {{ metadata.title }}"
+                  [ngClass]="{
+                    'border-red-500':
+                      form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                      form.get(metadata.metadata_registry_id.toString())?.touched,
+                    'border-gray-300':
+                      !(form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                        form.get(metadata.metadata_registry_id.toString())?.touched)
+                  }"
+                  class="w-full rounded-lg border bg-transparent py-2.5 px-4 text-sm"
+                />
+              }
+              @case ('dropdown') {
+                <!-- <app-select
+                  [options]="getOptionsFromId(metadata.dropdown?.dropdown_id)"
+                  [formControlName]="metadata.metadata_registry_id"
+                  [disabled]="false"
+                  className="flex-1 rounded-lg">
+                </app-select> -->
+                <select
+                  [formControlName]="metadata.metadata_registry_id"
+                  [ngClass]="{
+                      'border-red-500':
+                        form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                        form.get(metadata.metadata_registry_id.toString())?.touched,
+                      'border-gray-300':
+                        !(form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                          form.get(metadata.metadata_registry_id.toString())?.touched)
+                    }"
+                  class="h-11 w-full rounded-lg border bg-transparent
+                        px-3.5 py-2.5 pr-11 text-sm shadow-theme-xs
+                        border-gray-300 focus:border-brand-300 focus:outline-hidden
+                        focus:ring-3 focus:ring-brand-500/10
+                        dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
+                  >
+                  <option [ngValue]="null">
+                    Select {{ metadata.title }}
+                  </option>
+
+                  @for (option of getOptionsFromId(metadata.dropdown?.dropdown_id); track $index) {
+                    <option [ngValue]="option.value">
+                      {{ option.label }}
+                    </option>
+                  }
+                </select>
+              }
+              @case ('date') {
+                <input
+                  type="text"
+                  [formControlName]="metadata.metadata_registry_id"
+                  placeholder="DD-MM-YYYY"
+                  [ngClass]="{
+                    'border-red-500':
+                      form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                      form.get(metadata.metadata_registry_id.toString())?.touched,
+                    'border-gray-300':
+                      !(form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                        form.get(metadata.metadata_registry_id.toString())?.touched)
+                  }"
+                  class="w-full rounded-lg border bg-transparent py-2.5 px-4 text-sm"
+                  (input)="formatDateInput($event, metadata.metadata_registry_id.toString())"
+                />
+              }
+              @default {
+                <input
+                  type="text"
+                  [formControlName]="metadata.metadata_registry_id"
+                  placeholder="Enter {{ metadata.title }}"
+                  [ngClass]="{
+                    'border-red-500':
+                      form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                      form.get(metadata.metadata_registry_id.toString())?.touched,
+                    'border-gray-300':
+                      !(form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                        form.get(metadata.metadata_registry_id.toString())?.touched)
+                  }"
+                  class="w-full rounded-lg border bg-transparent py-2.5 px-4 text-sm"
+                />
+              }
+            }
+          }
+        </div>
+      }
+    </div>
+    <div class="mt-6">
+      <button
+        type="submit"
+        class="rounded-lg bg-brand-600 px-6 py-2.5 text-sm text-white">
+        Submit
+      </button>
+    </div>
+  </form>
+</div>
+<!-- [disabled]="form.invalid"
+[ngClass]="{'btn-disabled': form.invalid}" -->

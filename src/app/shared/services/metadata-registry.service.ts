@@ -5,6 +5,7 @@ import { ApiService } from './api.service';
 import { ComponentTypeService, ComponentType } from './component-type.service';
 import { Option } from '../components/form/select/select.component';
 import { ApiEndpointsConsts } from '../constants/api-endpoints.constants';
+import { DropdownType } from './dropdown-management.service';
 
 export interface MetadataRegistry {
   metadata_registry_id: number;
@@ -16,6 +17,7 @@ export interface MetadataRegistry {
   updatedAt: string;
   publishedAt: string;
   componentType?: ComponentType;
+  dropdown?:DropdownType
 }
 
 export interface MetadataRegistryPayload {
@@ -53,7 +55,8 @@ export class MetadataRegistryService {
           createdAt: item.createdAt || '',
           updatedAt: item.updatedAt || '',
           publishedAt: item.publishedAt || '',
-          componentType: item.componentType || ''
+          componentType: item.componentType || '',
+          dropdown: item.dropdown || ''
         }));
       })
     );
@@ -114,5 +117,11 @@ export class MetadataRegistryService {
       value: String(ct.id),
       label: ct.name
     }));
+  }
+
+  reorderMetadata(payload: {
+    items: { metadata_registry_id: number; metadataOrder: number }[];
+  }) {
+    return this.apiService.post(`${this.endpoint}/reorder`, payload, true);
   }
 }

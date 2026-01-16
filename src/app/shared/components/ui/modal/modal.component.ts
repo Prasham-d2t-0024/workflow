@@ -53,8 +53,8 @@ export class ModalComponent {
     event.stopPropagation();
   }
 
-  @HostListener('document:keydown.escape', ['$event'])
-  onEscape(event: KeyboardEvent) {
+  // @HostListener('document:keydown.escape', ['$event'])
+  onEscape(event: any) {
     if (this.isOpen) {
       this.close.emit();
     }

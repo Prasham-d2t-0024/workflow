@@ -1,0 +1,307 @@
+<app-datatable
+  [columns]="columns"
+  [data]="dropdowns"
+  [actions]="actions"
+  [headerConfig]="headerConfig"
+  (btnClickTrigger)="openAddModal()"
+></app-datatable>
+
+<!-- ADD MODAL -->
+<app-modal
+  [isOpen]="isAddModalOpen"
+  (close)="closeAddModal()"
+  [size]="600"
+>
+  <div class="p-6">
+    <h2 class="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">
+      Add Dropdown
+    </h2>
+
+    <!-- Name -->
+    <div class="mb-4">
+      <label class="block mb-2 text-sm font-medium">Name</label>
+      <input
+        type="text"
+        [(ngModel)]="formName"
+        class="w-full rounded-lg border px-4 py-2.5 text-sm"
+      />
+    </div>
+
+    <!-- Code -->
+    <div class="mb-4">
+      <label class="block mb-2 text-sm font-medium">Code&nbsp;
+        <i class="fas fa-info-circle text-gray-400 cursor-pointer" 
+         title="Use lowercase letters wihout spaces. Use '_' as separator.  ">
+        </i>
+      </label>
+      <input
+        type="text"
+        (input)="onCodeChange()"
+        [(ngModel)]="formCode"
+        class="w-full rounded-lg border px-4 py-2.5 text-sm"
+        [class.border-red-500]="codeError"
+      />
+      @if (codeError) {
+        <p class="mt-1 text-xs text-red-500">
+            {{ codeErrorMessage }}
+        </p>
+        }
+    </div>
+
+    <!-- Status Field -->
+    <!-- <div class="mb-4">
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+            Status
+        </label>
+        <select [(ngModel)]="formStatus" class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs
+            focus:border-brand-300 focus:outline-hidden
+            focus:ring-3 focus:ring-brand-500/10
+            dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+            dark:focus:border-brand-800">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+        </select>
+    </div> -->
+
+    <!-- Options -->
+    <div class="mb-4">
+      <div class="flex justify-between mb-2">
+        <label class="text-sm font-medium">Options</label>
+        <button
+          type="button"
+          class="text-brand-600 text-sm"
+          (click)="addOption()"
+        >
+          + Add Option
+        </button>
+      </div>
+
+      @for (opt of options; let i = $index; track i) {
+        <div class="mb-2">
+          <div class="flex gap-2 items-start">
+            <input
+              type="text"
+              [(ngModel)]="opt.label"
+              (input)="onLabelChange()"
+              placeholder="Label"
+              class="flex-1 rounded-lg border px-3 py-2 text-sm"
+              [class.border-red-500]="opt.duplicate"
+            />
+
+            <button
+              type="button"
+              (click)="removeOption(i)"
+              class="text-red-500 mt-2"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+
+          <!-- Auto generated value preview -->
+          <!-- @if (opt.label?.trim()) {
+            <p class="mt-1 text-xs text-gray-500">
+              Value: <code>{{ normalizeValue(opt.label) }}</code>
+            </p>
+          } -->
+
+          <!-- Duplicate error -->
+          @if (opt.duplicate) {
+            <p class="text-xs text-red-500">
+              Duplicate value after normalization
+            </p>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Footer -->
+    <div class="flex justify-end gap-3 mt-6">
+      <app-button variant="outline" (btnClick)="closeAddModal()">
+        Cancel
+      </app-button>
+
+      <app-button
+        variant="primary"
+        [disabled]="isSaveDisabled()"
+        (btnClick)="saveDropdown()"
+      >
+        Save
+      </app-button>
+    </div>
+  </div>
+</app-modal>
+
+<!-- EDIT MODAL -->
+<app-modal
+  [isOpen]="isEditModalOpen"
+  (close)="closeEditModal()"
+  [size]="600"
+>
+  <div class="p-6">
+    <h2 class="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">
+      Edit Dropdown
+    </h2>
+
+    <!-- Name -->
+    <div class="mb-4">
+      <label class="block mb-2 text-sm font-medium">Name</label>
+      <input
+        type="text"
+        [(ngModel)]="formName"
+        class="w-full rounded-lg border px-4 py-2.5 text-sm"
+      />
+    </div>
+
+    <!-- Code (readonly) -->
+    <div class="mb-4">
+      <label class="block mb-2 text-sm font-medium">Code&nbsp;
+        <i class="fas fa-info-circle text-gray-400 cursor-pointer" 
+         title="Use lowercase letters wihout spaces. Use '_' as separator.  ">
+      </i>
+      </label>
+      <input
+        type="text"
+        (input)="onCodeChange()"
+        [(ngModel)]="formCode"
+        disabled
+        class="w-full rounded-lg border px-4 py-2.5 text-sm bg-gray-100"
+        [class.border-red-500]="codeError"
+      />
+      @if (codeError) {
+        <p class="mt-1 text-xs text-red-500">
+            {{ codeErrorMessage }}
+        </p>
+        }
+    </div>
+
+    <!-- Status Field -->
+    <!-- <div class="mb-4">
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+            Status
+        </label>
+        <select [(ngModel)]="formStatus" class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs
+            focus:border-brand-300 focus:outline-hidden
+            focus:ring-3 focus:ring-brand-500/10
+            dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+            dark:focus:border-brand-800">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+        </select>
+    </div> -->
+
+    <!-- Options (same as add) -->
+    <div class="mb-4">
+      <div class="flex justify-between mb-2">
+        <label class="text-sm font-medium">Options</label>
+        <button
+          type="button"
+          class="text-brand-600 text-sm"
+          (click)="addOption()"
+        >
+          + Add Option
+        </button>
+      </div>
+
+      @for (opt of options; let i = $index; track i) {
+        @if(!opt.isDeletedByUser){
+            <div class="mb-2">
+              <div class="flex gap-2 items-start">
+                <input
+                  type="text"
+                  [(ngModel)]="opt.label"
+                  (input)="onLabelChange()"
+                  placeholder="Label"
+                  class="flex-1 rounded-lg border px-3 py-2 text-sm"
+                  [class.border-red-500]="opt.duplicate"
+                />
+    
+                <button
+                  type="button"
+                  (click)="removeOption(i)"
+                  class="text-red-500 mt-2"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+    
+              <!-- @if (opt.label?.trim()) {
+                <p class="mt-1 text-xs text-gray-500">
+                  Value: <code>{{ normalizeValue(opt.label) }}</code>
+                </p>
+              } -->
+    
+              @if (opt.duplicate) {
+                <p class="text-xs text-red-500">
+                  Duplicate value after normalization
+                </p>
+              }
+            </div>
+        }
+      }
+    </div>
+
+    <div class="flex justify-end gap-3 mt-6">
+      <app-button variant="outline" (btnClick)="closeEditModal()">
+        Cancel
+      </app-button>
+
+      <app-button
+        variant="primary"
+        [disabled]="isSaveDisabled()"
+        (btnClick)="updateDropdown()"
+      >
+        Save
+      </app-button>
+    </div>
+  </div>
+</app-modal>
+
+
+<!-- Delete Confirmation Modal -->
+<app-modal 
+  [isOpen]="isDeleteModalOpen"
+  (close)="closeDeleteModal()"
+  [title]="'Delete Menu'"
+  className="max-w-md"
+>
+  <div class="p-6">
+    <!-- Modal Heading -->
+    <h2 class="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">
+      Delete Menu
+    </h2>
+
+    <!-- Confirmation Text -->
+    <div class="mb-6 text-sm text-gray-700 dark:text-gray-300">
+      <p>
+        Are you sure you want to delete
+        <span class="font-semibold text-gray-900 dark:text-white">
+          {{ deletingDropdown?.name }}
+        </span>?
+      </p>
+      <!-- <p class="mt-2 text-xs text-red-600 dark:text-red-400">
+        This action cannot be undone.
+      </p> -->
+    </div>
+
+    <!-- Footer Buttons -->
+    <div class="flex justify-end gap-3">
+      <app-button
+        [variant]="'outline'"
+        [size]="'md'"
+        (btnClick)="closeDeleteModal()"
+      >
+        Cancel
+      </app-button>
+
+      <app-button
+        [variant]="'primary'"
+        [size]="'md'"
+        (btnClick)="confirmDelete()"
+        class="bg-red-500 hover:bg-red-600 focus:ring-red-500/20"
+      >
+        <i class="fas fa-trash mr-2"></i>
+        Yes, Delete
+      </app-button>
+    </div>
+  </div>
+</app-modal>

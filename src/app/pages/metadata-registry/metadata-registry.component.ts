@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { UtilityService } from '../../shared/services/utility.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -12,6 +12,7 @@ import { BadgeComponent } from '../../shared/components/ui/badge/badge.component
 import { NotificationService } from '../../shared/services/notification.service';
 import { DataTableAction, DataTableColumn, DataTableHeaderConfig } from '../../shared/components/tables/data-table/data-table.models';
 import { DatatableComponent } from '../../shared/components/tables/data-table/data-table.component';
+import { DropdownManagementService } from '../../shared/services/dropdown-management.service';
 
 @Component({
   selector: 'app-metadata-registry',
@@ -30,6 +31,7 @@ import { DatatableComponent } from '../../shared/components/tables/data-table/da
 export class MetadataRegistryComponent {
 
   metadataRegistries: MetadataRegistry[] = []; 
+  dropdowns: any[] = []; 
   componentTypes: ComponentType[] = [];
   componentTypeOptions: Option[] = [];
   
@@ -135,6 +137,8 @@ export class MetadataRegistryComponent {
   formIsRequired = false;
   formIsMultiple = false;
   formComponentType:any = '';
+  formDropdown:any = '';
+  showDropdownSelection:boolean = false;
   
   editingMetadataRegistry: MetadataRegistry | null = null;
   deletingMetadataRegistry: MetadataRegistry | null = null;
@@ -153,12 +157,15 @@ export class MetadataRegistryComponent {
   constructor(
     private metadataRegistryService: MetadataRegistryService,
     public utilityService: UtilityService,
-    public notificationService: NotificationService
+    public notificationService: NotificationService,
+    private dropdownManagementService: DropdownManagementService,
+    public cdref: ChangeDetectorRef
   ){}
 
   ngOnInit() {
     this.loadComponentTypes();
     this.loadMetadataRegistries();
+    this.loadDropDowns();
   }
 
   loadComponentTypes() {
@@ -185,6 +192,22 @@ export class MetadataRegistryComponent {
       }
     });
   }
+  loadDropDowns(){
+    this.dropdownManagementService.getDropdowns().subscribe({
+      next: (data: any[]) => {
+        this.dropdowns = data;
+        this.dropdowns.map((dd)=>{
+          dd.value = String(dd.dropdown_id);
+          dd.label = dd.name
+          return dd;
+         })
+      },
+      error: (err) => {
+        this.notificationService.error('Something went wrong while loading Dropdown list');
+        console.error('Failed to load Dropdown list:', err);
+      }
+    })
+  }
 
   /* ===== COMMENTED OUT - OLD PAGINATION METHOD ===== */
   // goToPage(page: number) {
@@ -202,6 +225,7 @@ export class MetadataRegistryComponent {
 
   closeAddMetadataRegistryModal() {
     this.isAddModalOpen = false;
+    this.showDropdownSelection = false;
     this.resetForm();
   }
 
@@ -211,6 +235,8 @@ export class MetadataRegistryComponent {
     this.formIsRequired = false;
     this.formIsMultiple = false;
     this.formComponentType = '';
+    this.formDropdown = '';
+    this.showDropdownSelection = false;
   }
 
   isAddButtonDisabled(): boolean {
@@ -218,7 +244,14 @@ export class MetadataRegistryComponent {
   }
 
   onComponentTypeChange(value: string) {
+    if(this.componentTypeOptions.find((ct)=> ct.value == value)?.label.toLowerCase() == 'dropdown'){
+      this.showDropdownSelection = true;
+    }
     this.formComponentType = value;
+  }
+
+  onDropdownChange(value:string){
+    this.formDropdown = value;
   }
 
   // Edit functions
@@ -229,12 +262,19 @@ export class MetadataRegistryComponent {
     this.formIsRequired = item.isrequired;
     this.formIsMultiple = item.ismultiple;
     this.formComponentType = String(item.componentType?.component_type_id || '');
+    this.formDropdown = String(item?.dropdown?.dropdown_id || '');
+    let selectedComponentType = this.componentTypeOptions.find((ct) => ct.value == this.formComponentType);
+    if(selectedComponentType?.label.toLowerCase() === 'dropdown'){
+      this.showDropdownSelection = true;
+      this.cdref.detectChanges();
+    }
     this.isEditModalOpen = true;
   }
 
   closeEditMetadataRegistryModal() {
     this.isEditModalOpen = false;
     this.editingMetadataRegistry = null;
+    this.showDropdownSelection = false;
     this.resetForm();
   }
 
@@ -250,6 +290,7 @@ export class MetadataRegistryComponent {
         isrequired: this.formIsRequired,
         ismultiple: this.formIsMultiple,
         componenttype_id: Number(this.formComponentType),
+        dropdown_id: this.formDropdown ? Number(this.formDropdown) : null
         // publishedAt: this.editingMetadataRegistry.publishedAt,
       };
       let payload = JSON.stringify(obj);
@@ -275,7 +316,8 @@ export class MetadataRegistryComponent {
         key: this.formKey.trim(),
         isrequired: this.formIsRequired,
         ismultiple: this.formIsMultiple,
-        componenttype_id: Number(this.formComponentType)
+        componenttype_id: Number(this.formComponentType),
+        dropdown_id: this.formDropdown ? Number(this.formDropdown) : null
       };
       // let payload = {"data":obj};
       
@@ -319,4 +361,47 @@ export class MetadataRegistryComponent {
       });
     }
   }
+
+  onRowOrderChange(event: any) {
+    if (!event) return;
+
+    const {
+      previousIndex,
+      currentIndex,
+      movedItem,
+      replacedItem,
+      updatedData,
+    } = event;
+
+    // 🔹 Build payload ONLY for affected rows (both indexes)
+    const items: {
+      metadata_registry_id: number;
+      metadataOrder: number;
+    }[] = [];
+
+    // Moved item → new position
+    items.push({
+      metadata_registry_id: movedItem.metadata_registry_id,
+      metadataOrder: currentIndex + 1,
+    });
+
+    // Replaced item → old position (if exists)
+    if (replacedItem) {
+      items.push({
+        metadata_registry_id: replacedItem.metadata_registry_id,
+        metadataOrder: previousIndex + 1,
+      });
+    }
+
+    this.metadataRegistryService.reorderMetadata({ items }).subscribe({
+      next: () => {
+        this.notificationService.success('Metadata order updated successfully');
+      },
+      error: (err) => {
+        this.notificationService.error('Failed to reorder metadata');
+      },
+    });
+}
+
+
 }
