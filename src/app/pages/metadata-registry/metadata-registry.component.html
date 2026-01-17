@@ -1,19 +1,17 @@
-<!-- <div class="rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]"> -->
-    <app-datatable
-      [columns]="metadataRegistryColumns"
-      [data]="metadataRegistries"
-      [actions]="metadataRegistryActions"
-      [headerConfig]="headerConfig"
-      (btnClickTrigger)="openAddMetadataRegistryModal()"
-      [reorderable]="true"
-      (rowOrderChange)="onRowOrderChange($event)"
-      [config]="{
+<app-datatable
+    [columns]="metadataRegistryColumns"
+    [data]="metadataRegistries"
+    [actions]="metadataRegistryActions"
+    [headerConfig]="headerConfig"
+    (btnClickTrigger)="openAddMetadataRegistryModal()"
+    [reorderable]="true"
+    (rowOrderChange)="onRowOrderChange($event)"
+    [config]="{
         pageSize: 10,
         showSearch: true,
         showPagination: true
-      }">
-    </app-datatable>
-<!-- </div> -->
+    }">
+</app-datatable>
 
 <!-- Add Metadata Registry Modal -->
 <app-modal 

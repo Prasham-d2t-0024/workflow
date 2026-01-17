@@ -96,19 +96,44 @@ export class DatatableComponent<T> implements OnChanges {
     let rows = [...this.data];
 
     // Search
+    // if (this.searchTerm) {
+    //   rows = rows.filter(row =>
+    //     this.columns.every(col =>
+    //       col.searchable !== false &&
+    //       String((row as any)[col.key] ?? '')
+    //         .toLowerCase()
+    //         .includes(this.searchTerm.toLowerCase())
+    //     )
+    //   );
+    // }
+
+      // Search
     if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+
       rows = rows.filter(row =>
-        this.columns.some(col =>
-          col.searchable !== false &&
-          String((row as any)[col.key] ?? '')
-            .toLowerCase()
-            .includes(this.searchTerm.toLowerCase())
-        )
+        this.columns.some(col => {
+          if (col.searchable !== true) return false;
+
+          // Support nested keys like "user.name"
+          const keys = (col.key as string).split('.');
+          let value: any = row;
+
+          for (const key of keys) {
+            value = value?.[key];
+            if (value === undefined || value === null) {
+              return false;
+            }
+          }
+
+          return String(value).toLowerCase().includes(term);
+        })
       );
     }
 
     // Sort (disabled when reorderable)
-    if (this.sortKey && !this.reorderable) {
+    // if (this.sortKey && !this.reorderable) {
+    if (this.sortKey) {
       rows.sort((a: any, b: any) => {
         const v1 = a[this.sortKey!];
         const v2 = b[this.sortKey!];
@@ -145,7 +170,8 @@ export class DatatableComponent<T> implements OnChanges {
 
   /* ================= Sorting ================= */
   onHeaderClick(col: DataTableColumn<T>) {
-    if (!this.reorderable && col.sortable === true) {
+    // if (!this.reorderable && col.sortable === true) {
+    if (col.sortable === true) {
       this.toggleSort(col.key as string);
     }
   }
@@ -158,7 +184,8 @@ export class DatatableComponent<T> implements OnChanges {
   }
 
   isSortable(col: DataTableColumn<any>): boolean {
-    return col.sortable === true && !this.reorderable;
+    // return col.sortable === true && !this.reorderable;
+    return col.sortable === true;
   }
 
   isSorted(col: DataTableColumn<any>): boolean {

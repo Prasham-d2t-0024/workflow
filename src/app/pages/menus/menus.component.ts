@@ -70,6 +70,12 @@ export class MenusComponent implements OnInit {
       displayKey: 'role_names'
     },
     {
+      key: 'menuGroup.name',
+      label: 'Menu Group',
+      sortable: false,
+      searchable: true,
+    },
+    {
       key: 'status',
       label: 'Status',
       type: 'badge',

@@ -79,7 +79,23 @@
                         }
                       </select>
                     }
-
+                    @case ('date') {
+                      <input
+                        type="text"
+                        [formControlName]="metadata.metadata_registry_id"
+                        placeholder="DD-MM-YYYY"
+                        [ngClass]="{
+                          'border-red-500':
+                            form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                            form.get(metadata.metadata_registry_id.toString())?.touched,
+                          'border-gray-300':
+                            !(form.get(metadata.metadata_registry_id.toString())?.invalid &&
+                              form.get(metadata.metadata_registry_id.toString())?.touched)
+                        }"
+                        class="w-full rounded-lg border bg-transparent py-2.5 px-4 text-sm"
+                        (input)="formatDateInput($event, metadata.metadata_registry_id.toString())"
+                      />
+                    }
                     @default {
                         <input
                         type="text"
@@ -96,6 +112,12 @@
                         class="flex-1 rounded-lg border bg-transparent py-2.5 px-4 text-sm"
                       />
                     }
+                  }
+                  @if(form.get(metadata.metadata_registry_id.toString())?.touched &&
+                  form.get(metadata.metadata_registry_id.toString())?.hasError('invalidDate')){
+                    <div class="text-sm text-red-500 ml-1 error-styling">
+                      Invalid date format
+                    </div>
                   }
 
                   <!-- ADD MORE -->
@@ -242,14 +264,22 @@
                 />
               }
             }
+            @if(form.get(metadata.metadata_registry_id.toString())?.touched &&
+            form.get(metadata.metadata_registry_id.toString())?.hasError('invalidDate')){
+                <div class="text-sm text-red-500 ml-1 error-styling">
+                  Invalid date format
+                </div>
+            }
           }
         </div>
       }
     </div>
     <div class="mt-6">
       <button
+        [disabled]="form.invalid"
+        [ngClass]="{'btn-disabled': form.invalid}"
         type="submit"
-        class="rounded-lg bg-brand-600 px-6 py-2.5 text-sm text-white">
+        class="rounded-lg bg-brand-600 px-6 py-2.5 text-sm text-white transition-all duration-200 ease-in-out shadow-sm hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:shadow-md focus:outline-none focus:ring-2 focus:ring-brand-500/40  disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:translate-y-0 disabled:active:shadow-none">
         Submit
       </button>
     </div>

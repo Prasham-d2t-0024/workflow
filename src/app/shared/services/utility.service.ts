@@ -95,4 +95,29 @@ export class UtilityService {
       return 'Invalid Date';
     }
   }
+
+  /**
+   * To check the date validation
+   * @param day 
+   * @param month 
+   * @param year 
+   * @returns 
+   */
+  isValidDate(day: number, month: number, year: number): boolean {
+    if (!day || !month || !year) return false;
+
+    if (month < 1 || month > 12) return false;
+    if (day < 1 || day > 31) return false;
+    if (year < 1000) return false;
+
+    // Check actual calendar date
+    const date = new Date(year, month - 1, day);
+
+    return (
+      date.getFullYear() === year &&
+      date.getMonth() === month - 1 &&
+      date.getDate() === day
+    );
+  }
+
 }

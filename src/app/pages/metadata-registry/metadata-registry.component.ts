@@ -16,6 +16,7 @@ import { DropdownManagementService } from '../../shared/services/dropdown-manage
 
 @Component({
   selector: 'app-metadata-registry',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -82,7 +83,8 @@ export class MetadataRegistryComponent {
     {
       key: 'componentType.name',
       label: 'Component Type',
-      sortable: false,
+      sortable: true,
+      searchable: true,
     },
     {
       key: 'createdAt',
@@ -119,11 +121,6 @@ export class MetadataRegistryComponent {
     ]
   };
   /* ===== END DATATABLE CONFIGURATION ===== */
-
-  /* ===== COMMENTED OUT - OLD PAGINATION LOGIC ===== */
-  // currentPage = 1;
-  // itemsPerPage = 5;
-  /* ===== END COMMENTED OUT ===== */
   
   // Modal state
   isAddModalOpen = false;

@@ -82,7 +82,7 @@ export class FileCreationComponent implements OnInit {
     });
   }
 
-    loadDropDowns(){
+  loadDropDowns(){
     this.dropdownManagementService.getDropdowns().subscribe({
       next: (data: any[]) => {
         this.dropdowns = data;
@@ -148,36 +148,63 @@ getFormArray(id: number): FormArray {
     );
   }
 
-  formatDateInput(event: Event,controlName: string) {
-    const input = event.target as HTMLInputElement;
+ formatDateInput(event: Event, controlName: string) {
+  const input = event.target as HTMLInputElement;
+  const control = this.form.get(controlName);
 
-    let digits = input.value.replace(/\D/g, '');
+  if (!control) return;
 
-    digits = digits.substring(0, 8);
+  // Remove non-digits
+  let digits = input.value.replace(/\D/g, '').substring(0, 8);
 
-    let formatted = '';
+  const day = digits.substring(0, 2);
+  const month = digits.substring(2, 4);
+  const year = digits.substring(4, 8);
 
-    const day = digits.substring(0, 2);
-    const month = digits.substring(2, 4);
-    const year = digits.substring(4, 8);
+  let formatted = '';
 
-    if (day) {
-      formatted = day;
+  if (day) formatted = day;
+  if (month) formatted += '-' + month;
+  if (year) formatted += '-' + year;
+
+  // Set formatted value
+  control.setValue(formatted, { emitEvent: false });
+
+  // Validate only when full date is entered
+  if (digits.length === 8) {
+    const isValid = this.utilityService.isValidDate(
+      Number(day),
+      Number(month),
+      Number(year)
+    );
+
+    if (!isValid) {
+      control.setErrors({ invalidDate: true });
+    } else {
+      // Remove only invalidDate error (keep others like required)
+      if (control.hasError('invalidDate')) {
+        const errors = { ...control.errors };
+        delete errors['invalidDate'];
+        control.setErrors(Object.keys(errors).length ? errors : null);
+      }
     }
-
-    if (month) {
-      formatted += '-' + month;
+  } else {
+    // Clear invalidDate error if user is still typing
+    if (control.hasError('invalidDate')) {
+      const errors = { ...control.errors };
+      delete errors['invalidDate'];
+      control.setErrors(Object.keys(errors).length ? errors : null);
     }
-
-    if (year) {
-      formatted += '-' + year;
-    }
-
-    this.form.get(controlName)?.setValue(formatted, {
-      emitEvent: false,
-    });
   }
+}
 
+
+  getValueByMetadataKey(key: string): any {
+    const meta = this.metadataRegistries.find(m => m.key === key);
+    return meta
+      ? this.form.get(meta.metadata_registry_id.toString())?.value
+      : null;
+  }
 
   submit() {
     if (this.form.invalid) {
@@ -185,7 +212,8 @@ getFormArray(id: number): FormArray {
       this.notificationService.error('Please fill all required fields');
       return;
     }
-    let payload:any = {items:[]};
+    const fileName = `${this.getValueByMetadataKey('dc.caseTitle')}_${this.getValueByMetadataKey('dc.caseYear')}`;
+    let payload:any = {items:[], file_name:`${fileName}`};
     Object.keys(this.form.controls).forEach(key => {
       const control = this.form.get(key);
       if(isArray(control?.value)){
