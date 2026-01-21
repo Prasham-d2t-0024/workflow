@@ -134,7 +134,7 @@
           className="w-full"
           size="sm"
           [disabled]="isLoading"
-          (btnClick)="onSignIn()"
+          [type]="'submit'"
         >
           {{ isLoading ? 'Signing in...' : 'Sign in' }}
         </app-button>

@@ -323,6 +323,8 @@ export class UserManagementComponent implements OnInit {
       menu_ids: this.formMenuIds.map(id => Number(id)),
     };
 
+    if(!this.formMenuIds.length) delete payload['menu_ids'];
+
     this.usersService.createUser(payload).subscribe({
       next: (response) => {
         this.closeAddUserModal();
