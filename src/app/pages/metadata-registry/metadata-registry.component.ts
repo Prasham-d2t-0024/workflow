@@ -135,7 +135,7 @@ export class MetadataRegistryComponent {
   formIsMultiple = false;
   formComponentType:any = '';
   formDropdown:any = '';
-  showDropdownSelection:boolean = false;
+  showDropdownSelection:boolean = true;
   
   editingMetadataRegistry: MetadataRegistry | null = null;
   deletingMetadataRegistry: MetadataRegistry | null = null;

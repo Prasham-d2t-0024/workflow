@@ -165,8 +165,8 @@
             </app-select>
         </div>
 
-        @if(showDropdownSelection){
-            <div class="mb-4">
+        <!-- @if(showDropdownSelection){ -->
+            <div [class.hidden]="!showDropdownSelection" class="mb-4">
                 <label for="editDropDown" class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
                     Dropdown Items
                 </label>
@@ -178,7 +178,7 @@
                     className="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800">
                 </app-select>
             </div>
-        }
+        <!-- } -->
         
         <div class="mb-4 flex items-center">
             <input 
@@ -214,7 +214,7 @@
                 [size]="'md'"
                 [disabled]="isEditButtonDisabled()"
                 (btnClick)="onSaveEdit()">
-                <i class="fas fa-save mr-2"></i>
+                <i class="fas fa-save text-lg"></i>
                 Save
             </app-button>
         </div>
