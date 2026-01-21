@@ -392,10 +392,10 @@ export class MetadataRegistryComponent {
 
     this.metadataRegistryService.reorderMetadata({ items }).subscribe({
       next: () => {
-        this.notificationService.success('Metadata order updated successfully');
+        this.notificationService.success('Metadata moved successfully');
       },
       error: (err) => {
-        this.notificationService.error('Failed to reorder metadata');
+        this.notificationService.error('Failed to move metadata');
       },
     });
 }
