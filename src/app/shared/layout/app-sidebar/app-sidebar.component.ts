@@ -361,7 +361,6 @@ export class AppSidebarComponent {
     this.menusService.getMenuByUser(user_id).subscribe((data)=>{
       this.menus = data?.menus ?? [];
       this.navItems = this.mapMenusToNavItems(this.menus);
-      console.log("========>",this.navItems)
     })
   }
 
@@ -405,7 +404,6 @@ export class AppSidebarComponent {
   }
 
   onSubmenuClick() {
-    console.log('click submenu');
     this.isMobileOpen$.subscribe(isMobile => {
       if (isMobile) {
         this.sidebarService.setMobileOpen(false);

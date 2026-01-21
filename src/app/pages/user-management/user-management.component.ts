@@ -159,8 +159,7 @@ export class UserManagementComponent implements OnInit {
       this.isDataLoaded = true;
       
       if (this.loadingErrors.length === 0) {
-        console.log('Data loaded successfully');
-        console.log("----------------->",this.roleOptions, this.menuOptions, this.users)
+        console.log('User Management Data loaded successfully');
       }
     }).catch((error) => {
       this.notificationService.error('Failed to load some data');
