@@ -19,6 +19,7 @@ export interface Menu {
 })
 export class MenusService {
   private endpoint = ApiEndpointsConsts.MENUS;
+  private userMenuEndpoint = ApiEndpointsConsts.USER_MENUS;
   private roleMenuEndPoint = ApiEndpointsConsts.ROLE_MENU
 
   constructor(private apiService: ApiService) { }
@@ -66,5 +67,9 @@ export class MenusService {
    */
   deleteMenu(id: string): Observable<any> {
     return this.apiService.delete(`${this.endpoint}/${id}`, true);
+  }
+
+  getMenuByUser(user_id:number){
+    return this.apiService.get(`${this.userMenuEndpoint}/${user_id}`, {}, true);
   }
 }

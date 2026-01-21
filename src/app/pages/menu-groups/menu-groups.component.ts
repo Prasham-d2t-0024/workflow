@@ -22,6 +22,7 @@ export class MenuGroupsComponent {
 
   menuGroupsColumns: DataTableColumn<any>[] = [
     { key: 'name', label: 'Name', sortable: true, searchable: true },
+    { key: 'icon', label: 'Icon', sortable: false, type: 'icon' },
     { key: 'order', label: 'Order', sortable: true, searchable: false },
     { key: 'status', label: 'Status', type: 'badge', badgeMap: { active: {label: 'Active', color: 'bg-success-50 text-success-600'}, inactive: {label: 'Inactive', color: 'bg-error-50 text-error-600'} } }
   ];
@@ -55,6 +56,7 @@ export class MenuGroupsComponent {
 
   formName = '';
   formOrder: number | null = null;
+  formIcon = '';
   formStatus: 'active' | 'inactive' = 'active';
 
   editing: MenuGroup | null = null;
@@ -117,6 +119,7 @@ export class MenuGroupsComponent {
   resetForm() {
     this.formName = '';
     this.formOrder = null;
+    this.formIcon = '';
     this.formStatus = 'active';
   }
   onAddItem() {
@@ -124,6 +127,7 @@ export class MenuGroupsComponent {
       const payload: MenuGroupPayload = {
         name: this.formName.trim(),
         order: Number(this.formOrder),
+        icon: this.formIcon.trim() || undefined,
         status: this.formStatus,
       };
       this.service.createMenuGroup(payload).subscribe({
@@ -145,6 +149,7 @@ export class MenuGroupsComponent {
     this.editing = { ...item };
     this.formName = item.name;
     this.formOrder = item.order;
+    this.formIcon = item.icon || '';
     this.formStatus = item.status;
     this.isEditModalOpen = true;
   }
@@ -161,6 +166,7 @@ export class MenuGroupsComponent {
       const payload: MenuGroupPayload = {
         name: this.formName.trim(),
         order: Number(this.formOrder),
+        icon: this.formIcon.trim() || undefined,
         status: this.formStatus,
       };
       this.service.updateMenuGroup(this.editing.id, payload).subscribe({

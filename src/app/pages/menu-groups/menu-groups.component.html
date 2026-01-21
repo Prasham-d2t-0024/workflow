@@ -94,18 +94,18 @@
     </div>
   } -->
 
-    <app-datatable
-      [columns]="menuGroupsColumns"
-      [data]="groups"
-      [actions]="menuGroupsActions"
-      [headerConfig]="headerConfig"
-      (btnClickTrigger)="openAddMenuGroupModal()"
-      [config]="{
-        pageSize: 5,
-        showSearch: true,
-        showPagination: true
-      }">
-    </app-datatable>
+<app-datatable
+    [columns]="menuGroupsColumns"
+    [data]="groups"
+    [actions]="menuGroupsActions"
+    [headerConfig]="headerConfig"
+    (btnClickTrigger)="openAddMenuGroupModal()"
+    [config]="{
+    pageSize: 5,
+    showSearch: true,
+    showPagination: true
+    }">
+</app-datatable>
 
 <!-- </div> -->
 
@@ -122,6 +122,18 @@
       <div class="mb-4">
           <label for="mgOrder" class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">Order</label>
           <input type="number" min="1" id="mgOrder" [(ngModel)]="formOrder" placeholder="Enter order" class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800" />
+      </div>
+
+      <div class="mb-4">
+          <label for="mgIcon" class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">Icon</label>
+          <div class="flex gap-3 items-center">
+              <input type="text" id="mgIcon" [(ngModel)]="formIcon" placeholder="Enter icon name (e.g., fas fa-users)" class="flex-1 rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800" />
+              @if (formIcon.trim()) {
+              <div class="flex items-center justify-center w-12 h-10 rounded-lg border border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
+                  <i [class]="formIcon" class="text-xl text-gray-700 dark:text-gray-300"></i>
+              </div>
+              }
+          </div>
       </div>
 
       <div class="mb-6">
@@ -155,6 +167,18 @@
       <div class="mb-4">
           <label for="editMgOrder" class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">Order</label>
           <input type="number" min="1" id="editMgOrder" [(ngModel)]="formOrder" placeholder="Enter order" class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800" />
+      </div>
+
+      <div class="mb-4">
+          <label for="editMgIcon" class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">Icon</label>
+          <div class="flex gap-3 items-center">
+              <input type="text" id="editMgIcon" [(ngModel)]="formIcon" placeholder="Enter icon name (e.g., fas fa-users)" class="flex-1 rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800" />
+              @if (formIcon.trim()) {
+              <div class="flex items-center justify-center w-12 h-10 rounded-lg border border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
+                  <i [class]="formIcon" class="text-xl text-gray-700 dark:text-gray-300"></i>
+              </div>
+              }
+          </div>
       </div>
 
       <div class="mb-6">

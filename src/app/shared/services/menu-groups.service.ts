@@ -7,12 +7,14 @@ export interface MenuGroup {
   id: number;
   name: string;
   order: number;
+  icon?: string;
   status: 'active' | 'inactive';
 }
 
 export interface MenuGroupPayload {
   name: string;
   order: number;
+  icon?: string;
   status: 'active' | 'inactive';
 }
 
@@ -56,6 +58,7 @@ export class MenuGroupsService {
       id: item.id ?? item.menu_group_id ?? 0,
       name: item.name ?? '',
       order: Number(item.order ?? 0),
+      icon: item.icon ?? '',
       status: (item.status === 'inactive' ? 'inactive' : 'active') as 'active' | 'inactive',
     };
   }

@@ -172,6 +172,15 @@
                               'menu-dropdown-item-active': isActive(subItem.path),
                             }"
                       >
+                        <span
+                          class="menu-item-icon-size"
+                          [ngClass]="{
+                            'menu-item-icon-active': isActive(subItem.path),
+                            'menu-item-icon-inactive': !isActive(subItem.path)
+                          }"
+                          [innerHTML]="subItem?.icon ? subItem?.icon : '' | safeHtml"
+                        >
+                        </span>
                         {{ subItem.name }}
                         <span class="flex items-center gap-1 ml-auto">
                           @if (subItem.new) {
