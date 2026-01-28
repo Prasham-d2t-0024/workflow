@@ -28,6 +28,7 @@ import { UserManagementComponent } from './pages/user-management/user-management
 import { ProcessesComponent } from './pages/processes/processes.component';
 import { FileCreationComponent } from './pages/file-creation/file-creation.component';
 import { DropdownManagementComponent } from './pages/dropdown-management/dropdown-management.component';
+import { MetadataGroupsComponent } from './pages/metadata-groups/metadata-groups.component';
 
 export const routes: Routes = [
   {
@@ -81,6 +82,11 @@ export const routes: Routes = [
         path:'processes',
         component:ProcessesComponent,
         title:'Processes Management'
+      },
+      {
+        path:'metadata-groups',
+        component:MetadataGroupsComponent,
+        title:'Metadata Groups'
       },
       {
         path:'file-creation',

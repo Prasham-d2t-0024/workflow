@@ -15,6 +15,7 @@
   @for (option of options; track $index) {
     <option [value]="option.value">
       {{ option.label }}
+      <!-- {{ option.label }}---{{option.value}}---{{value}}---{{typeof(option.value)}}---{{typeof(value)}} -->
     </option>
   }
 </select>

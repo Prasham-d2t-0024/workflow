@@ -87,6 +87,12 @@ export class MetadataRegistryComponent {
       searchable: true,
     },
     {
+      key: 'metadataGroup.name',
+      label: 'Metadata Group',
+      sortable: true,
+      searchable: true,
+    },
+    {
       key: 'createdAt',
       label: 'Created At',
       type: 'date',
@@ -136,6 +142,10 @@ export class MetadataRegistryComponent {
   formComponentType:any = '';
   formDropdown:any = '';
   showDropdownSelection:boolean = true;
+
+  metadataGroups: any[] = [];
+  metadataGroupOptions: Option[] = [];
+  formMetadataGroup: any = '';
   
   editingMetadataRegistry: MetadataRegistry | null = null;
   deletingMetadataRegistry: MetadataRegistry | null = null;
@@ -163,6 +173,7 @@ export class MetadataRegistryComponent {
     this.loadComponentTypes();
     this.loadMetadataRegistries();
     this.loadDropDowns();
+    this.loadMetadataGroups();
   }
 
   loadComponentTypes() {
@@ -206,6 +217,23 @@ export class MetadataRegistryComponent {
     })
   }
 
+  loadMetadataGroups() {
+    this.metadataRegistryService.getMetadataGroups().subscribe({
+      next: (data) => {
+        this.metadataGroups = data;
+        this.metadataGroupOptions =
+          this.metadataRegistryService.convertMetadataGroupsToOptions(data);
+      },
+      error: (err) => {
+        this.notificationService.error(
+          'Something went wrong while loading metadata groups'
+        );
+        console.error(err);
+      },
+    });
+  }
+
+
   /* ===== COMMENTED OUT - OLD PAGINATION METHOD ===== */
   // goToPage(page: number) {
   //   if (page >= 1 && page <= this.totalPages) {
@@ -233,11 +261,17 @@ export class MetadataRegistryComponent {
     this.formIsMultiple = false;
     this.formComponentType = '';
     this.formDropdown = '';
+    this.formMetadataGroup = '';
     this.showDropdownSelection = false;
   }
 
   isAddButtonDisabled(): boolean {
-    return this.formTitle.trim() === '' || this.formKey.trim() === '' || this.formComponentType === '';
+    return (
+      this.formTitle.trim() === '' ||
+      this.formKey.trim() === '' ||
+      this.formComponentType === '' ||
+      this.formMetadataGroup === '' 
+    );
   }
 
   onComponentTypeChange(value: string) {
@@ -260,6 +294,7 @@ export class MetadataRegistryComponent {
     this.formIsMultiple = item.ismultiple;
     this.formComponentType = String(item.componentType?.component_type_id || '');
     this.formDropdown = String(item?.dropdown?.dropdown_id || '');
+    this.formMetadataGroup = String(item?.metadataGroup?.metadata_group_id || '');
     let selectedComponentType = this.componentTypeOptions.find((ct) => ct.value == this.formComponentType);
     if(selectedComponentType?.label.toLowerCase() === 'dropdown'){
       this.showDropdownSelection = true;
@@ -287,7 +322,8 @@ export class MetadataRegistryComponent {
         isrequired: this.formIsRequired,
         ismultiple: this.formIsMultiple,
         componenttype_id: Number(this.formComponentType),
-        dropdown_id: this.formDropdown ? Number(this.formDropdown) : null
+        dropdown_id: this.formDropdown ? Number(this.formDropdown) : null,
+        metadata_group_id: Number(this.formMetadataGroup)
         // publishedAt: this.editingMetadataRegistry.publishedAt,
       };
       let payload = JSON.stringify(obj);
@@ -314,7 +350,8 @@ export class MetadataRegistryComponent {
         isrequired: this.formIsRequired,
         ismultiple: this.formIsMultiple,
         componenttype_id: Number(this.formComponentType),
-        dropdown_id: this.formDropdown ? Number(this.formDropdown) : null
+        dropdown_id: this.formDropdown ? Number(this.formDropdown) : null,
+        metadata_group_id: Number(this.formMetadataGroup)
       };
       // let payload = {"data":obj};
       

@@ -153,6 +153,11 @@ export class AppSidebarComponent {
       path: "/home/processes",
     },
     {
+      name: "Metadata Groups",
+      icon: "<i class=\"fa-solid fa-border-all text-lg\"></i>",
+      path: "/home/metadata-groups",
+    },
+    {
       name: "File Creation",
       icon: "<i class=\"fa-solid fa-file\"></i>",
       path: "/home/file-creation",

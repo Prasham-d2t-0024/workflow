@@ -1,0 +1,187 @@
+<div class="w-full space-y-4">
+  <app-datatable
+    [data]="metadataGroups"
+    [columns]="metadataGroupsColumns"
+    [actions]="metadataGroupsActions"
+    [headerConfig]="headerConfig"
+    (btnClickTrigger)="openAddMetadataGroupModal()"
+    [config]="{
+        pageSize: 5,
+        showSearch: true,
+        showPagination: true
+      }">
+  </app-datatable>
+
+  <!-- Add Metadata Group Modal -->
+  <app-modal
+    [isOpen]="isAddModalOpen"
+    [showCloseButton]="true"
+    (close)="closeAddMetadataGroupModal()"
+    className="max-w-md"
+  >
+    <div class="p-6">
+      <h2 class="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">
+        Add Metadata Group
+      </h2>
+
+      <div class="mb-4">
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+          Name
+        </label>
+        <input
+          type="text"
+          [(ngModel)]="formName"
+          placeholder="Enter metadata group name"
+          class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm
+                 text-gray-800 shadow-theme-xs placeholder:text-gray-400
+                 focus:border-brand-300 focus:outline-hidden
+                 focus:ring-3 focus:ring-brand-500/10
+                 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+                 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+        />
+      </div>
+
+      <div class="mb-6">
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+          Status
+        </label>
+        <select
+          [(ngModel)]="formStatus"
+          class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm
+                 text-gray-800 shadow-theme-xs
+                 focus:border-brand-300 focus:outline-hidden
+                 focus:ring-3 focus:ring-brand-500/10
+                 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+                 dark:focus:border-brand-800"
+        >
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <app-button
+          [variant]="'outline'"
+          [size]="'md'"
+          (btnClick)="closeAddMetadataGroupModal()"
+        >
+          Cancel
+        </app-button>
+        <app-button
+          [variant]="'primary'"
+          [size]="'md'"
+          [disabled]="isAddButtonDisabled()"
+          (btnClick)="addMetadataGroup()"
+        >
+          <i class="fas fa-plus text-lg"></i>
+          Add
+        </app-button>
+      </div>
+    </div>
+  </app-modal>
+
+  <!-- Edit Metadata Group Modal -->
+  <app-modal
+    [isOpen]="isEditModalOpen"
+    [showCloseButton]="true"
+    (close)="closeEditMetadataGroupModal()"
+    className="max-w-md"
+  >
+    <div class="p-6">
+      <h2 class="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">
+        Edit Metadata Group
+      </h2>
+
+      <div class="mb-4">
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+          Name
+        </label>
+        <input
+          type="text"
+          [(ngModel)]="formName"
+          placeholder="Enter metadata group name"
+          class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm
+                 text-gray-800 shadow-theme-xs placeholder:text-gray-400
+                 focus:border-brand-300 focus:outline-hidden
+                 focus:ring-3 focus:ring-brand-500/10
+                 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+                 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+        />
+      </div>
+
+      <div class="mb-6">
+        <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+          Status
+        </label>
+        <select
+          [(ngModel)]="formStatus"
+          class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm
+                 text-gray-800 shadow-theme-xs
+                 focus:border-brand-300 focus:outline-hidden
+                 focus:ring-3 focus:ring-brand-500/10
+                 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+                 dark:focus:border-brand-800"
+        >
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <app-button
+          [variant]="'outline'"
+          [size]="'md'"
+          (btnClick)="closeEditMetadataGroupModal()"
+        >
+          Cancel
+        </app-button>
+        <app-button
+          [variant]="'primary'"
+          [size]="'md'"
+          [disabled]="isEditButtonDisabled()"
+          (btnClick)="updateMetadataGroup()"
+        >
+          <i class="fas fa-save text-lg"></i>
+          Save
+        </app-button>
+      </div>
+    </div>
+  </app-modal>
+
+  <!-- Delete Confirmation Modal -->
+  <app-modal
+    [isOpen]="isDeleteModalOpen"
+    [showCloseButton]="true"
+    (close)="closeDeleteModal()"
+    className="max-w-md"
+  >
+    <div class="p-6">
+      <h2 class="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">
+        Delete Metadata Group
+      </h2>
+      <p class="mb-6 text-gray-700 dark:text-gray-300">
+        Are you sure you want to delete
+        <strong>{{ deletingMetadataGroup?.name }}</strong>?
+        This action cannot be undone.
+      </p>
+
+      <div class="flex justify-end gap-3">
+        <app-button
+          [variant]="'outline'"
+          [size]="'md'"
+          (btnClick)="closeDeleteModal()"
+        >
+          Cancel
+        </app-button>
+        <app-button
+          [variant]="'primary'"
+          [size]="'md'"
+          (btnClick)="confirmDelete()"
+        >
+          <i class="fas fa-trash mr-2"></i>
+          Delete
+        </app-button>
+      </div>
+    </div>
+  </app-modal>
+</div>

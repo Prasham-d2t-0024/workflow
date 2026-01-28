@@ -12,4 +12,5 @@ export const ApiEndpointsConsts = {
     METADATA_REGISTRY_VALUES:'/metadata-registry-values',
     DROPDOWNS:'/dropdowns',
     USER_MENUS:'/user-menus',
+    ITEMS:'/items'
 }

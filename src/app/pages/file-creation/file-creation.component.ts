@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, isDevMode, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { UtilityService } from '../../shared/services/utility.service';
@@ -11,6 +11,17 @@ import { MultiSelectComponent } from '../../shared/components/form/multi-select/
 import { FileCreationService } from '../../shared/services/file-creation.service';
 import { isArray } from 'lodash';
 import { DropdownManagementService } from '../../shared/services/dropdown-management.service';
+import { DatePickerComponent } from '../../shared/components/form/date-picker/date-picker.component';
+import { Item } from '../../shared/services/items.service';
+import { ModalComponent } from '../../shared/components/ui/modal/modal.component';
+import { ButtonComponent } from '../../shared/components/ui/button/button.component';
+
+interface MetadataGroupUI {
+  metadata_group_id: number;
+  name: string;
+  expanded: boolean;
+  items: MetadataRegistry[];
+}
 
 @Component({
   selector: 'app-file-creation',
@@ -19,9 +30,11 @@ import { DropdownManagementService } from '../../shared/services/dropdown-manage
     ReactiveFormsModule,
     CommonModule,
     FormsModule,
-    MultiSelectComponent,
-    SelectComponent,
-    JsonPipe],
+    JsonPipe,
+    DatePickerComponent,
+    ModalComponent,
+    ButtonComponent
+  ],
   templateUrl: './file-creation.component.html',
   styleUrl: './file-creation.component.css'
 })
@@ -32,6 +45,15 @@ export class FileCreationComponent implements OnInit {
   componentTypeOptions: Option[] = [];
   dropdowns: any[] = []; 
   form!: FormGroup;
+  metadataGroups: any[] = [];
+  metadataGroupOptions: Option[] = [];
+  groupedMetadata: MetadataGroupUI[] = [];
+  items: Item[] = [];
+  selectedItemForEdit:any = null;
+  selectedItemToDelete:any = null;
+  updatingItem:boolean = false;
+  isDeleteModalOpen:boolean = false;
+  isDevMode = isDevMode();
 
   constructor(
     private metadataRegistryService: MetadataRegistryService,
@@ -47,6 +69,7 @@ export class FileCreationComponent implements OnInit {
     this.loadComponentTypes();
     this.loadMetadataRegistries();
     this.loadDropDowns();
+    this.loadMetadataGroups();
   }
 
   loadComponentTypes() {
@@ -69,8 +92,7 @@ export class FileCreationComponent implements OnInit {
     this.metadataRegistryService.getMetadataRegistries().subscribe({
       next: (data: MetadataRegistry[]) => {
         this.metadataRegistries = data;
-        console.log("this.metadataRegistries",this.metadataRegistries);
-        
+        this.buildGroupedMetadata();
         this.buildDynamicForm();
       },
       error: (err) => {
@@ -99,24 +121,42 @@ export class FileCreationComponent implements OnInit {
     })
   }
 
-  // buildDynamicForm() {
-  //   this.metadataRegistries.forEach(metadata => {
-  //     const validators = metadata.isrequired ? [Validators.required] : [];
-  //     if (metadata.ismultiple) {
-  //       this.form.addControl(
-  //         metadata.key,
-  //         this.fb.array([
-  //           new FormControl('', validators)
-  //         ])
-  //       );
-  //     } else {
-  //       this.form.addControl(
-  //         metadata.key,
-  //         new FormControl('', validators)
-  //       );
-  //     }
-  //   });
-  // }
+  loadMetadataGroups() {
+    this.metadataRegistryService.getMetadataGroups().subscribe({
+      next: (data) => {
+        this.metadataGroups = data;
+        this.metadataGroupOptions =
+          this.metadataRegistryService.convertMetadataGroupsToOptions(data);
+      },
+      error: (err) => {
+        this.notificationService.error('Something went wrong while loading metadata groups');
+        console.error(err);
+      },
+    });
+  }
+
+  buildGroupedMetadata() {
+    const map = new Map<number, MetadataGroupUI>();
+
+    this.metadataRegistries.forEach((meta) => {
+      const group = (meta as any)?.metadataGroup;
+
+      if (!group) return;
+
+      if (!map.has(group.metadata_group_id)) {
+        map.set(group.metadata_group_id, {
+          metadata_group_id: group.metadata_group_id,
+          name: group.name,
+          expanded: true, // default open
+          items: [],
+        });
+      }
+
+      map.get(group.metadata_group_id)!.items.push(meta);
+    });
+
+    this.groupedMetadata = Array.from(map.values());
+  }
 
   buildDynamicForm() {
   this.metadataRegistries.forEach(metadata => {
@@ -205,15 +245,19 @@ getFormArray(id: number): FormArray {
       ? this.form.get(meta.metadata_registry_id.toString())?.value
       : null;
   }
-
   submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.notificationService.error('Please fill all required fields');
       return;
     }
-    const fileName = `${this.getValueByMetadataKey('dc.caseTitle')}_${this.getValueByMetadataKey('dc.caseYear')}`;
-    let payload:any = {items:[], file_name:`${fileName}`};
+    let payload:any;
+    if(this.updatingItem){
+      payload = {items:[], item_id: this.selectedItemForEdit};
+    }else{
+      const fileName = `${this.getValueByMetadataKey('dc.caseTitle')}_${this.getValueByMetadataKey('dc.caseYear')}`;
+      payload = {items:[], file_name:`${fileName}`};
+    }
     Object.keys(this.form.controls).forEach(key => {
       const control = this.form.get(key);
       if(isArray(control?.value)){
@@ -236,12 +280,17 @@ getFormArray(id: number): FormArray {
     });
     this.fileCreationService.submitMetadataForm(payload).subscribe({
       next: (resp) => {
+        this.loadAllItemsById(resp?.item_id);
         this.notificationService.success('Metadata submitted successfully');
         this.resetForm();
+        this.updatingItem = false;
+        this.selectedItemForEdit = null;
       },
       error: (err) => {
         this.notificationService.error('Failed to submit metadata');
         console.error(err);
+        this.updatingItem = false;
+        this.selectedItemForEdit = null;
       }
     });
   }
@@ -265,6 +314,10 @@ getFormArray(id: number): FormArray {
     }
   }
 
+  toggleGroup(group: MetadataGroupUI) {
+    group.expanded = !group.expanded;
+  }
+
   resetForm() {
     Object.keys(this.form.controls).forEach(key => {
       const control = this.form.get(key);
@@ -276,4 +329,91 @@ getFormArray(id: number): FormArray {
       this.form.reset();
     });
   }
+
+  handleDateChange(event:any, formControlName:any){
+    console.log("DATESTR", event, formControlName);
+    let dateStr = event?.dateStr || '';
+    this.form?.controls?.[formControlName].setValue(dateStr)
+  }
+
+  // Items handling from here
+  loadAllItems():void{
+    this.metadataRegistryService.getItems().subscribe((resp)=>{
+      this.items = resp;
+    });
+  }
+  loadAllItemsById(itemId:any):void{
+    this.metadataRegistryService.getItemById(itemId).subscribe((resp)=>{
+      let index = this.items.findIndex((item)=>item.item_id == itemId)
+      if(index < 0){
+        this.items = [...this.items,resp];
+      }
+    });
+  }
+
+  editItem(item: Item) {
+    this.metadataRegistryService.getMetadatasByItemId(item?.item_id).subscribe((resp)=>{
+      console.log('Item By ItemId', resp);
+      this.updatingItem = true;
+      this.selectedItemForEdit = item?.item_id
+      this.populateFormForEdit(resp);
+    });
+  }
+
+  populateFormForEdit(values: any[]) {
+    const grouped = values.reduce((acc, curr) => {
+      if (!acc[curr.metadata_registry_id]) {
+        acc[curr.metadata_registry_id] = [];
+      }
+      acc[curr.metadata_registry_id].push(curr.value);
+      return acc;
+    }, {} as Record<number, any[]>);
+
+    // Step 3: apply values to form
+    Object.entries(grouped).forEach(([metadataId, values]) => {
+      let vals = values as any[];
+      const metaIdNum = Number(metadataId);
+      const metadata = this.metadataRegistries.find(m => m.metadata_registry_id === metaIdNum);
+      const control = this.form.get(metadataId);
+
+      if (!metadata || !control) return;
+
+      // MULTIPLE
+      if (metadata.ismultiple && control instanceof FormArray) {
+        control.clear();
+        vals.forEach(val => {
+          control.push(new FormControl(val));
+        });
+      }
+      // SINGLE
+      else {
+        control.setValue(vals[0], { emitEvent: false });
+      }
+    });
+  }
+
+
+  deleteItem(item: any) {
+    this.selectedItemToDelete = item;
+    this.isDeleteModalOpen = true;
+  }
+
+  confirmDelete(){
+    this.metadataRegistryService.deleteItem(this.selectedItemToDelete?.item_id).subscribe({
+      next: (resp:any) => {
+        this.loadAllItems();
+        this.notificationService.success('Metadata deleted successfully');
+        this.resetForm();
+        this.selectedItemToDelete = null;
+        this.isDeleteModalOpen = false;
+      },
+      error: (err:any) => {
+        this.selectedItemToDelete = null;
+        this.isDeleteModalOpen = false;
+        this.notificationService.error('Failed to deleted metadata');
+        console.error(err);
+      }
+    })
+  }
+
 }

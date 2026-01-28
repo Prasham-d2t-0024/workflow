@@ -883,3 +883,15 @@ pre[class*="language-"].line-numbers {
   top: 60px !important;
   z-index: 9999999 !important;
 }
+
+.flatpickr-wrapper {
+  display: block;
+}
+
+.flatpickr-wrapper > div {
+  display: none !important;
+}
+
+.flatpickr-input {
+  width: 100%;
+}
