@@ -158,6 +158,11 @@ export class AppSidebarComponent {
       path: "/home/metadata-groups",
     },
     {
+      name: "DMS Management Master",
+      icon: "<i class=\"fa-solid fa-gears text-lg\"></i>",
+      path: "/home/dms-master",
+    },
+    {
       name: "File Creation",
       icon: "<i class=\"fa-solid fa-file\"></i>",
       path: "/home/file-creation",

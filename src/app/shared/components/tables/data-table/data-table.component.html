@@ -1,5 +1,5 @@
 <div
-  class="overflow-hidden rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.05] dark:bg-white/[0.03]">
+  class="overflow-hidden rounded-2xl border border-gray-200 bg-white pt-4 dark:border-white/[0.10] dark:bg-white/[0.07]">
 
   <!-- Header -->
   <div class="flex flex-col gap-4 px-6 mb-4 sm:flex-row sm:items-center sm:justify-between">
@@ -84,79 +84,88 @@
         [cdkDropListDisabled]="!reorderable"
         (cdkDropListDropped)="onRowDrop($event)">
 
-        @for (row of paginatedData; track row) {
-          <tr
-            cdkDrag
-            [cdkDragDisabled]="!reorderable"
-            class="border-b dark:border-white/[0.05]">
+        @if(paginatedData.length){
 
-            @if (reorderable) {
-              <td
-                cdkDragHandle
-                class="px-2 text-gray-400 cursor-grab active:cursor-grabbing">
-                <i class="fa-solid fa-grip-vertical"></i>
-              </td>
-            }
-
-            @for (col of columns; track col.key) {
-              <td class="px-6 py-3.5 text-theme-sm text-gray-700 dark:text-gray-400 font-medium">
-
-                @switch (col.type) {
-
-                  @case ('badge') {
-                    <span class="inline-flex rounded-full px-3 py-1 text-xs font-medium"
-                      [ngClass]="col.badgeMap?.[getValue(row, col)]?.color">
-                      {{ col.badgeMap?.[getValue(row, col)]?.label }}
-                    </span>
-                  }
-
-                  @case ('date') {
-                    {{ utilityService.formatDate(getValue(row, col), 'medium') }}
-                  }
-
-                  @case ('icon') {
-                    <span class="cursor-pointer text-lg" [title]="getValue(row, col)">
-                      <i [class]="getValue(row, col)"></i>
-                    </span>
-                  }
-
-                  @case ('multiselect') {
-                    @if (col.allOptions?.length) {
-                      <app-multi-select
-                        [label]="''"
-                        [options]="col.allOptions"
-                        [defaultSelected]="getValue(row, col)"
-                        [disabled]="true">
-                      </app-multi-select>
+          @for (row of paginatedData; track row) {
+            <tr
+              cdkDrag
+              [cdkDragDisabled]="!reorderable"
+              class="border-b dark:border-white/[0.05]">
+  
+              @if (reorderable) {
+                <td
+                  cdkDragHandle
+                  class="px-2 text-gray-400 cursor-grab active:cursor-grabbing">
+                  <i class="fa-solid fa-grip-vertical"></i>
+                </td>
+              }
+  
+              @for (col of columns; track col.key) {
+                <td class="px-6 py-3.5 text-theme-sm text-gray-700 dark:text-gray-400 font-medium">
+  
+                  @switch (col.type) {
+  
+                    @case ('badge') {
+                      <span class="inline-flex rounded-full px-3 py-1 text-xs font-medium"
+                        [ngClass]="col.badgeMap?.[getValue(row, col)]?.color">
+                        {{ col.badgeMap?.[getValue(row, col)]?.label }}
+                      </span>
+                    }
+  
+                    @case ('date') {
+                      {{ utilityService.formatDate(getValue(row, col), 'medium') }}
+                    }
+  
+                    @case ('icon') {
+                      <span class="cursor-pointer text-lg" [title]="getValue(row, col)">
+                        <i [class]="getValue(row, col)"></i>
+                      </span>
+                    }
+  
+                    @case ('multiselect') {
+                      @if (col.allOptions?.length) {
+                        <app-multi-select
+                          [label]="''"
+                          [options]="col.allOptions"
+                          [defaultSelected]="getValue(row, col)"
+                          [disabled]="true">
+                        </app-multi-select>
+                      }
+                    }
+  
+                    @case ('dropdown') {
+                      <app-select
+                        [options]="getValue(row, col)"
+                        [placeholder]="'Options'"
+                        [disabled]="true"
+                      />
+                    }
+  
+                    @default {
+                      {{ col.formatter ? col.formatter(row) : getValue(row, col) }}
                     }
                   }
-
-                  @case ('dropdown') {
-                    <app-select
-                      [options]="getValue(row, col)"
-                      [placeholder]="'Options'"
-                      [disabled]="true"
-                    />
-                  }
-
-                  @default {
-                    {{ col.formatter ? col.formatter(row) : getValue(row, col) }}
-                  }
-                }
-              </td>
-            }
-
-            <!-- Actions -->
-            @if (actions && actions.length) {
-              <td class="px-6 py-3.5 text-left flex">
-                <button
-                  *ngFor="let action of actions"
-                  (click)="action.handler(row)"
-                  class="text-gray-500 hover:text-gray-800 border p-2 rounded-md mr-2">
-                  <i [class]="action.icon"></i>
-                </button>
-              </td>
-            }
+                </td>
+              }
+  
+              <!-- Actions -->
+              @if (actions && actions.length) {
+                <td class="px-6 py-3.5 text-left flex">
+                  <button
+                    *ngFor="let action of actions"
+                    (click)="action.handler(row)"
+                    class="text-gray-500 hover:text-gray-800 border p-2 rounded-md mr-2">
+                    <i [class]="action.icon"></i>
+                  </button>
+                </td>
+              }
+            </tr>
+          }
+        }@else {
+          <tr>
+            <td [attr.colspan]="columns.length + (actions && actions.length ? 1 : 0)" class="text-center py-3 text-gray-500">
+              No Data Available
+            </td>
           </tr>
         }
       </tbody>

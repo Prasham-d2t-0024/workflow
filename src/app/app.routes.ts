@@ -29,6 +29,7 @@ import { ProcessesComponent } from './pages/processes/processes.component';
 import { FileCreationComponent } from './pages/file-creation/file-creation.component';
 import { DropdownManagementComponent } from './pages/dropdown-management/dropdown-management.component';
 import { MetadataGroupsComponent } from './pages/metadata-groups/metadata-groups.component';
+import { DmsMasterComponent } from './pages/dms-master/dms-master.component';
 
 export const routes: Routes = [
   {
@@ -87,6 +88,11 @@ export const routes: Routes = [
         path:'metadata-groups',
         component:MetadataGroupsComponent,
         title:'Metadata Groups'
+      },
+      {
+        path:'dms-master',
+        component:DmsMasterComponent,
+        title:'DMS Management Master'
       },
       {
         path:'file-creation',

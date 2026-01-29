@@ -1,0 +1,196 @@
+<div class="w-full space-y-4">
+  <app-datatable
+    [data]="dmsMasters"
+    [columns]="dmsMasterColumns"
+    [actions]="dmsMasterActions"
+    [headerConfig]="headerConfig"
+    (btnClickTrigger)="openAddDmsMasterModal()"
+    [config]="{
+      pageSize: 5,
+      showSearch: true,
+      showPagination: true
+    }">
+  </app-datatable>
+
+  <!-- Add DMS Modal -->
+  <app-modal
+    [isOpen]="isAddModalOpen"
+    [showCloseButton]="true"
+    (close)="closeAddDmsMasterModal()"
+    className="max-w-md"
+  >
+    <div class="p-6">
+      <h2 class="mb-4 text-xl font-semibold text-gray-800 dark:text-white/90">
+        Add DMS Endpoint
+      </h2>
+
+      <div class="mb-4">
+        <label class="block mb-2 text-sm font-medium">Endpoint</label>
+        <input
+          type="text"
+          [(ngModel)]="formEndpoint"
+          placeholder="Enter DMS endpoint"
+          class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm
+                text-gray-800 shadow-theme-xs
+                focus:border-brand-300 focus:outline-hidden
+                focus:ring-3 focus:ring-brand-500/10
+                dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+                dark:focus:border-brand-800"
+        />
+      </div>
+
+      <div class="mb-6">
+        <label class="block mb-2 text-sm font-medium">Active</label>
+        <select [(ngModel)]="formActive" class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm
+                 text-gray-800 shadow-theme-xs
+                 focus:border-brand-300 focus:outline-hidden
+                 focus:ring-3 focus:ring-brand-500/10
+                 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+                 dark:focus:border-brand-800">
+          <option [ngValue]="true">Active</option>
+          <option [ngValue]="false">Inactive</option>
+        </select>
+      </div>
+
+            <!-- <div class="mb-4">
+        <label class="block mb-2 text-sm font-medium">Primary</label>
+        <select [(ngModel)]="formIsPrimary" class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm
+                 text-gray-800 shadow-theme-xs
+                 focus:border-brand-300 focus:outline-hidden
+                 focus:ring-3 focus:ring-brand-500/10
+                 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+                 dark:focus:border-brand-800">
+          <option [ngValue]="true">Yes</option>
+          <option [ngValue]="false">No</option>
+        </select>
+      </div> -->
+
+      <div class="mb-4 flex items-center">
+        <input 
+            type="checkbox" 
+            id="isPrimary"
+            [(ngModel)]="formIsPrimary"
+            class="w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 dark:focus:ring-brand-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+            <label for="isPrimary" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+                Is Primary
+            </label>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <app-button variant="outline" (btnClick)="closeAddDmsMasterModal()">
+          Cancel
+        </app-button>
+        <app-button
+          variant="primary"
+          [disabled]="isAddDisabled()"
+          (btnClick)="addDmsMaster()"
+        >
+          <i class="fas fa-plus"></i>
+          Add
+        </app-button>
+      </div>
+    </div>
+  </app-modal>
+
+  <!-- Edit DMS Modal -->
+  <app-modal
+    [isOpen]="isEditModalOpen"
+    [showCloseButton]="true"
+    (close)="closeEditDmsMasterModal()"
+    className="max-w-md"
+  >
+    <div class="p-6">
+      <h2 class="mb-4 text-xl font-semibold">Edit DMS Endpoint</h2>
+
+      <div class="mb-4">
+        <label class="block mb-2 text-sm font-medium">Endpoint</label>
+        <input
+          type="text"
+          [(ngModel)]="formEndpoint"
+          class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm
+                text-gray-800 shadow-theme-xs
+                focus:border-brand-300 focus:outline-hidden
+                focus:ring-3 focus:ring-brand-500/10
+                dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+                dark:focus:border-brand-800"
+        />
+      </div>
+
+      <!-- <div class="mb-4">
+        <label class="block mb-2 text-sm font-medium">Primary</label>
+        <select [(ngModel)]="formIsPrimary" class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm
+                 text-gray-800 shadow-theme-xs
+                 focus:border-brand-300 focus:outline-hidden
+                 focus:ring-3 focus:ring-brand-500/10
+                 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+                 dark:focus:border-brand-800">
+          <option [ngValue]="true">Yes</option>
+          <option [ngValue]="false">No</option>
+        </select>
+      </div> -->
+
+      <div class="mb-6">
+        <label class="block mb-2 text-sm font-medium">Active</label>
+        <select [(ngModel)]="formActive" class="w-full rounded-lg border border-gray-300 bg-transparent py-2.5 px-4 text-sm
+                 text-gray-800 shadow-theme-xs
+                 focus:border-brand-300 focus:outline-hidden
+                 focus:ring-3 focus:ring-brand-500/10
+                 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90
+                 dark:focus:border-brand-800">
+          <option [ngValue]="true">Active</option>
+          <option [ngValue]="false">Inactive</option>
+        </select>
+      </div>
+
+      <div class="mb-4 flex items-center">
+        <input 
+            type="checkbox" 
+            id="isPrimary"
+            [(ngModel)]="formIsPrimary"
+            class="w-4 h-4 text-brand-600 bg-gray-100 border-gray-300 rounded focus:ring-brand-500 dark:focus:ring-brand-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+            <label for="isPrimary" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-400">
+                Is Primary
+            </label>
+        </div>
+
+      <div class="flex justify-end gap-3">
+        <app-button variant="outline" (btnClick)="closeEditDmsMasterModal()">
+          Cancel
+        </app-button>
+        <app-button
+          variant="primary"
+          [disabled]="isEditDisabled()"
+          (btnClick)="updateDmsMaster()"
+        >
+          <i class="fas fa-save"></i>
+          Save
+        </app-button>
+      </div>
+    </div>
+  </app-modal>
+
+  <!-- Delete Modal -->
+  <app-modal
+    [isOpen]="isDeleteModalOpen"
+    (close)="closeDeleteModal()"
+    className="max-w-md"
+  >
+    <div class="p-6">
+      <h2 class="mb-4 text-xl font-semibold">Delete DMS Endpoint</h2>
+      <p>
+        Are you sure you want to delete
+        <strong>{{ deletingDmsMaster?.endpoint }}</strong>?
+      </p>
+
+      <div class="flex justify-end gap-3 mt-6">
+        <app-button variant="outline" (btnClick)="closeDeleteModal()">
+          Cancel
+        </app-button>
+        <app-button variant="primary" (btnClick)="confirmDelete()">
+          <i class="fas fa-trash"></i>
+          Delete
+        </app-button>
+      </div>
+    </div>
+  </app-modal>
+</div>
