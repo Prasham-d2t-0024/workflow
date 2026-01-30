@@ -316,28 +316,26 @@
 
 <!-- ITEMS LIST -->
 <div class="mt-8">
-  <div class="flex items-center justify-between mb-4">
-    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
-      Items
-    </h3>
-  </div>
-
-  <!-- Empty State -->
-  @if (items && items.length === 0) {
-    <div class="text-sm text-gray-500 dark:text-gray-400 italic">
-      No items added yet.
+  <div class="p-4 rounded-lg border bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+    <div class="flex items-center justify-between">
+      <h3 class="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
+        List of Files
+      </h3>
     </div>
-  }
+  
+    <!-- Empty State -->
+    @if (items && items.length === 0) {
+      <div class="text-sm text-gray-500 dark:text-gray-400 italic">
+        No items added yet.
+      </div>
+    }
 
-  <!-- Items Container -->
-  @if (items && items.length) {
     <div class="space-y-3">
       @for (item of items; track item.item_id) {
         <div
           class="flex items-center justify-between p-4 rounded-lg border bg-white
                  dark:bg-gray-800 dark:border-gray-700
-                 hover:shadow-sm transition"
-        >
+                 hover:shadow-sm transition">
           <!-- Item Info -->
           <div class="flex flex-col">
             <span class="font-medium text-gray-800 dark:text-gray-200">
@@ -378,6 +376,36 @@
           </div>
         </div>
       }
+    </div>
+  </div>
+
+  <!-- Items Container -->
+  @if (items && items.length) {
+    <!-- Batch Delivery Date Section -->
+    <div class="mt-6 p-4 rounded-lg border bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+      <div class="space-y-4">
+        <div class="flex flex-col">
+          <label class="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
+            Batch Related Actions
+          </label>
+          <app-date-picker 
+            (dateChange)="handleDeliveryDateChange($event)"
+            placeholder="Select batch delivery date"
+            class="w-full">
+          </app-date-picker>
+        </div>
+
+        <div class="flex justify-end">
+          <app-button 
+            [variant]="'primary'" 
+            [size]="'md'"
+            (btnClick)="commitBatch()"
+            [disabled]="!items || items.length === 0">
+            <i class="fas fa-check mr-2"></i>
+            Commit Batch
+          </app-button>
+        </div>
+      </div>
     </div>
   }
 </div>

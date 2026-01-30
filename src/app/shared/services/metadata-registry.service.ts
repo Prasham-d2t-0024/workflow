@@ -135,6 +135,10 @@ export class MetadataRegistryService {
     return this.itemService.getItemById(id);
   }
 
+  getItemsFromCurrentBatch(){
+    return this.itemService.getItemsFromCurrentBatch();
+  }
+
   getMetadatasByItemId(itemID:any){
     return this.apiService.get(`${this.metadata_registery_values_endpoint}/item/${itemID}`,null,true);
   }

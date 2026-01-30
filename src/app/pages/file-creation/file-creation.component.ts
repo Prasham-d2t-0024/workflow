@@ -54,6 +54,7 @@ export class FileCreationComponent implements OnInit {
   updatingItem:boolean = false;
   isDeleteModalOpen:boolean = false;
   isDevMode = isDevMode();
+  batchDeliveryDate: string | null = null;
 
   constructor(
     private metadataRegistryService: MetadataRegistryService,
@@ -70,6 +71,7 @@ export class FileCreationComponent implements OnInit {
     this.loadMetadataRegistries();
     this.loadDropDowns();
     this.loadMetadataGroups();
+    this.loadAllItems();
   }
 
   loadComponentTypes() {
@@ -338,8 +340,8 @@ getFormArray(id: number): FormArray {
 
   // Items handling from here
   loadAllItems():void{
-    this.metadataRegistryService.getItems().subscribe((resp)=>{
-      this.items = resp;
+    this.metadataRegistryService.getItemsFromCurrentBatch().subscribe((resp)=>{
+      this.items = resp?.items;
     });
   }
   loadAllItemsById(itemId:any):void{
@@ -414,6 +416,36 @@ getFormArray(id: number): FormArray {
         console.error(err);
       }
     })
+  }
+
+  handleDeliveryDateChange(event:any){
+    let dateStr = event?.dateStr || '';
+    this.batchDeliveryDate = dateStr;
+  }
+
+  commitBatch() {
+    if (!this.batchDeliveryDate) {
+      this.notificationService.error('Please select a delivery date');
+      return;
+    }
+
+    // Prepare batch payload
+    const payload = {
+      batch_delivery_date: this.utilityService.convertToRequiredDateFormate(this.batchDeliveryDate, 'DD-MM-YYYY', 'YYYY-MM-DD'),
+      // item_ids: this.items.map(item => item.item_id)
+    };
+
+    this.fileCreationService.commitBatch(payload).subscribe({
+      next: (resp) => {
+        this.notificationService.success('Batch committed successfully');
+        this.batchDeliveryDate = null;
+        this.loadAllItems();
+      },
+      error: (err) => {
+        this.notificationService.error('Failed to commit batch');
+        console.error(err);
+      }
+    });
   }
 
 }

@@ -120,4 +120,54 @@ export class UtilityService {
     );
   }
 
+  convertToRequiredDateFormate(
+    dateStr: string,
+    fromFormat: 'DD-MM-YYYY' | 'YYYY-MM-DD',
+    toFormat: 'DD-MM-YYYY' | 'YYYY-MM-DD',
+  ): string {
+    if (!dateStr) return dateStr;
+
+    let day: string;
+    let month: string;
+    let year: string;
+
+    // Parse input format
+    switch (fromFormat) {
+      case 'DD-MM-YYYY': {
+        [day, month, year] = dateStr.split('-');
+        break;
+      }
+      case 'YYYY-MM-DD': {
+        [year, month, day] = dateStr.split('-');
+        break;
+      }
+      default:
+        throw new Error('Unsupported fromFormat');
+    }
+
+    // Validate numbers
+    if (
+      !day || !month || !year ||
+      isNaN(+day) || isNaN(+month) || isNaN(+year)
+    ) {
+      throw new Error(`Invalid date string: ${dateStr}`);
+    }
+
+    // Pad values
+    day = day.padStart(2, '0');
+    month = month.padStart(2, '0');
+    year = year.padStart(4, '0');
+
+    // Build output format
+    switch (toFormat) {
+      case 'DD-MM-YYYY':
+        return `${day}-${month}-${year}`;
+      case 'YYYY-MM-DD':
+        return `${year}-${month}-${day}`;
+      default:
+        throw new Error('Unsupported toFormat');
+    }
+  }
+
+
 }

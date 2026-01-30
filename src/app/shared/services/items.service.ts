@@ -72,4 +72,8 @@ export class ItemService {
   deleteItem(id: string): Observable<any> {
     return this.apiService.delete(`${this.endpoint}/${id}`, true);
   }
+
+  getItemsFromCurrentBatch(){
+    return this.apiService.get(`${this.endpoint}/my/uncommitted`, {}, true);
+  }
 }

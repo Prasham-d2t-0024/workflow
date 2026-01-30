@@ -13,5 +13,6 @@ export const ApiEndpointsConsts = {
     DROPDOWNS:'/dropdowns',
     USER_MENUS:'/user-menus',
     ITEMS:'/items',
+    BATCHES:'/batches',
     DMS_MASTER:'/dms-masters'
 }
