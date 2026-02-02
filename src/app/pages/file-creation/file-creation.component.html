@@ -317,72 +317,26 @@
 </div>
 
 <!-- ITEMS LIST -->
+<!-- <div class="mt-8 rounded-lg border p-4 dark:border-gray-700"> -->
 <div class="mt-8">
-  <div class="p-4 rounded-lg border bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-    <div class="flex items-center justify-between">
-      <h3 class="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
-        List of Files
-      </h3>
-    </div>
-  
-    <!-- Empty State -->
-    @if (items && items.length === 0) {
-      <div class="text-sm text-gray-500 dark:text-gray-400 italic">
-        No files added yet.
-      </div>
-    }
-
+  <div class="rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
     <div class="space-y-3">
-      @for (item of items; track item.item_id) {
-        <div
-          class="flex items-center justify-between p-4 rounded-lg border bg-white
-                 dark:bg-gray-800 dark:border-gray-700
-                 hover:shadow-sm transition">
-          <!-- Item Info -->
-          <div class="flex flex-col">
-            <span class="font-medium text-gray-800 dark:text-gray-200">
-              {{ item.name }}
-            </span>
-            @if(isDevMode){
-              <span class="text-xs text-gray-500 dark:text-gray-400">
-                ID: {{ item.item_id }}
-              </span>  
-            } 
-          </div>
-
-          <!-- Actions -->
-          <div class="flex items-center gap-2">
-            <!-- Edit -->
-            <button
-              type="button"
-              (click)="editItem(item)"
-              class="p-2 rounded-lg border border-gray-300
-                     hover:bg-brand-50 text-brand-600
-                     dark:border-gray-600 dark:hover:bg-brand-900/20"
-              title="Edit"
-            >
-              <i class="fas fa-edit"></i>
-            </button>
-
-            <!-- Delete -->
-            <button
-              type="button"
-              (click)="deleteItem(item)"
-              class="p-2 rounded-lg border border-red-300
-                     hover:bg-red-50 text-red-600
-                     dark:border-red-600 dark:hover:bg-red-900/20"
-              title="Delete"
-            >
-              <i class="fas fa-trash"></i>
-            </button>
-          </div>
-        </div>
-      }
+        <app-datatable
+          [columns]="fileTableColumns"
+          [data]="fileTableRows"
+          [actions]="fileTableActions"
+          [headerConfig]="filesTableHeaderConfig"
+          [config]="{
+            pageSize: 5,
+            showSearch: true,
+            showPagination: true
+          }">
+        </app-datatable>
     </div>
   </div>
 
   <!-- Items Container -->
-  @if (items && items.length) {
+  @if (fileTableRows && fileTableRows.length) {
     <!-- Batch Delivery Date Section -->
     <div class="mt-6 p-4 rounded-lg border bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
       <div class="space-y-4">

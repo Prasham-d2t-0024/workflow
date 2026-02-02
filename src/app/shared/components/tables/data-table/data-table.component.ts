@@ -203,9 +203,13 @@ export class DatatableComponent<T> implements OnChanges {
     const keys = (col.key as string).split('.');
     let value: any = row;
 
-    for (const key of keys) {
-      value = value?.[key];
-      if (value === undefined || value === null) return 'N.A.';
+    if(value?.[col.key]){
+      value = value?.[col.key];
+    }else{
+      for (const key of keys) {
+        value = value?.[key];
+        if (value === undefined || value === null) return 'N.A.';
+      }
     }
 
     return value ?? 'N.A.';

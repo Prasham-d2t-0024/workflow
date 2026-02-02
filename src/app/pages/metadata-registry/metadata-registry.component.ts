@@ -141,7 +141,7 @@ export class MetadataRegistryComponent {
   formIsMultiple = false;
   formComponentType:any = '';
   formDropdown:any = '';
-  showDropdownSelection:boolean = true;
+  hideDropdownSelection:boolean = true;
 
   metadataGroups: any[] = [];
   metadataGroupOptions: Option[] = [];
@@ -250,7 +250,7 @@ export class MetadataRegistryComponent {
 
   closeAddMetadataRegistryModal() {
     this.isAddModalOpen = false;
-    this.showDropdownSelection = false;
+    this.hideDropdownSelection = true;
     this.resetForm();
   }
 
@@ -262,7 +262,7 @@ export class MetadataRegistryComponent {
     this.formComponentType = '';
     this.formDropdown = '';
     this.formMetadataGroup = '';
-    this.showDropdownSelection = false;
+    this.hideDropdownSelection = true;
   }
 
   isAddButtonDisabled(): boolean {
@@ -275,8 +275,9 @@ export class MetadataRegistryComponent {
   }
 
   onComponentTypeChange(value: string) {
+    this.hideDropdownSelection = true;
     if(this.componentTypeOptions.find((ct)=> ct.value == value)?.label.toLowerCase() == 'dropdown'){
-      this.showDropdownSelection = true;
+      this.hideDropdownSelection = false;
     }
     this.formComponentType = value;
   }
@@ -297,7 +298,7 @@ export class MetadataRegistryComponent {
     this.formMetadataGroup = String(item?.metadataGroup?.metadata_group_id || '');
     let selectedComponentType = this.componentTypeOptions.find((ct) => ct.value == this.formComponentType);
     if(selectedComponentType?.label.toLowerCase() === 'dropdown'){
-      this.showDropdownSelection = true;
+      this.hideDropdownSelection = false;
       this.cdref.detectChanges();
     }
     this.isEditModalOpen = true;
@@ -306,7 +307,7 @@ export class MetadataRegistryComponent {
   closeEditMetadataRegistryModal() {
     this.isEditModalOpen = false;
     this.editingMetadataRegistry = null;
-    this.showDropdownSelection = false;
+    this.hideDropdownSelection = true;
     this.resetForm();
   }
 

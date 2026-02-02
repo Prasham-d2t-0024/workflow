@@ -15,6 +15,8 @@ import { DatePickerComponent } from '../../shared/components/form/date-picker/da
 import { Item } from '../../shared/services/items.service';
 import { ModalComponent } from '../../shared/components/ui/modal/modal.component';
 import { ButtonComponent } from '../../shared/components/ui/button/button.component';
+import { DataTableColumn, DataTableHeaderConfig } from '../../shared/components/tables/data-table/data-table.models';
+import { DatatableComponent } from '../../shared/components/tables/data-table/data-table.component';
 
 interface MetadataGroupUI {
   metadata_group_id: number;
@@ -33,7 +35,8 @@ interface MetadataGroupUI {
     JsonPipe,
     DatePickerComponent,
     ModalComponent,
-    ButtonComponent
+    ButtonComponent,
+    DatatableComponent
   ],
   templateUrl: './file-creation.component.html',
   styleUrl: './file-creation.component.css'
@@ -55,6 +58,43 @@ export class FileCreationComponent implements OnInit {
   isDeleteModalOpen:boolean = false;
   isDevMode = isDevMode();
   batchDeliveryDate: string | null = null;
+  fileNameConfig: string = '';
+
+  // Files table handling
+
+  FILE_TABLE_METADATA_KEYS:any[] = [];
+  fileTableColumns: DataTableColumn<any>[] = [];
+  defaultFileTableColumns: DataTableColumn<any>[] = [
+    {
+      key: 'name',
+      label: 'File Name',
+      sortable: true,
+      searchable: true,
+    },
+    {
+      key: 'createdAt',
+      label: 'Created At',
+      type: 'date',
+      sortable: true,
+    },
+  ];
+  fileTableRows: any[] = [];
+
+  filesTableHeaderConfig: DataTableHeaderConfig<any> = {
+      title: 'List of files'
+    };
+
+  fileTableActions = [
+    {
+      icon: 'fa-solid fa-pencil',
+      handler: (row:any) => this.editItem(row),
+    },
+    {
+      icon: 'fa-solid fa-trash',
+      handler: (row:any) => this.deleteItem(row),
+    },
+  ];
+
 
   constructor(
     private metadataRegistryService: MetadataRegistryService,
@@ -63,7 +103,10 @@ export class FileCreationComponent implements OnInit {
     private fb: FormBuilder,
     private fileCreationService:FileCreationService,
     private dropdownManagementService: DropdownManagementService,
-  ) {}
+  ) {
+    this.FILE_TABLE_METADATA_KEYS = this.fileCreationService.filesTableColumn;
+    this.fileNameConfig = this.fileCreationService.fileNameConfig;
+  }
 
   ngOnInit() {
     this.form = this.fb.group({});
@@ -94,6 +137,10 @@ export class FileCreationComponent implements OnInit {
     this.metadataRegistryService.getMetadataRegistries().subscribe({
       next: (data: MetadataRegistry[]) => {
         this.metadataRegistries = data;
+        this.fileTableColumns = [...this.defaultFileTableColumns, ...this.buildColumnsFromMetadata(
+          data,
+          this.FILE_TABLE_METADATA_KEYS
+        )];
         this.buildGroupedMetadata();
         this.buildDynamicForm();
       },
@@ -257,7 +304,20 @@ getFormArray(id: number): FormArray {
     if(this.updatingItem){
       payload = {items:[], item_id: this.selectedItemForEdit};
     }else{
-      const fileName = `${this.getValueByMetadataKey('dc.caseTitle')}_${this.getValueByMetadataKey('dc.caseYear')}`;
+      // const fileName = `${this.getValueByMetadataKey('dc.caseTitle')}_${this.getValueByMetadataKey('dc.caseYear')}`;
+      let fileName = '';
+      let splittedFileNameConfig = this.fileNameConfig.split('_');
+      if(splittedFileNameConfig.length == 0){
+        fileName = `${this.getValueByMetadataKey('dc.caseTitle')}_${this.getValueByMetadataKey('dc.caseYear')}`;
+      }else{
+        splittedFileNameConfig.forEach((metadata,index)=>{
+          if(!fileName.length){
+            fileName = `${this.getValueByMetadataKey(metadata)}`
+          }else{
+            fileName = `${fileName}_${this.getValueByMetadataKey(metadata)}`
+          }
+        })
+      }
       payload = {items:[], file_name:`${fileName}`};
     }
     Object.keys(this.form.controls).forEach(key => {
@@ -282,7 +342,8 @@ getFormArray(id: number): FormArray {
     });
     this.fileCreationService.submitMetadataForm(payload).subscribe({
       next: (resp) => {
-        this.loadAllItemsById(resp?.item_id);
+        // this.loadAllItemsById(resp?.item_id);
+        this.loadAllItems();
         this.notificationService.success('Metadata submitted successfully');
         this.resetForm();
         this.updatingItem = false;
@@ -333,7 +394,6 @@ getFormArray(id: number): FormArray {
   }
 
   handleDateChange(event:any, formControlName:any){
-    console.log("DATESTR", event, formControlName);
     let dateStr = event?.dateStr || '';
     this.form?.controls?.[formControlName].setValue(dateStr)
   }
@@ -341,7 +401,7 @@ getFormArray(id: number): FormArray {
   // Items handling from here
   loadAllItems():void{
     this.metadataRegistryService.getItemsFromCurrentBatch().subscribe((resp)=>{
-      this.items = resp?.items;
+       this.fileTableRows = this.buildTableRows(resp.items);
     });
   }
   loadAllItemsById(itemId:any):void{
@@ -355,7 +415,6 @@ getFormArray(id: number): FormArray {
 
   editItem(item: Item) {
     this.metadataRegistryService.getMetadatasByItemId(item?.item_id).subscribe((resp)=>{
-      console.log('Item By ItemId', resp);
       this.updatingItem = true;
       this.selectedItemForEdit = item?.item_id
       this.populateFormForEdit(resp);
@@ -445,6 +504,59 @@ getFormArray(id: number): FormArray {
         this.notificationService.error('Failed to commit batch');
         console.error(err);
       }
+    });
+  }
+
+  buildColumnsFromMetadata(
+    metadataList: any[],
+    orderedKeys: string[]
+  ): DataTableColumn<any>[] {
+
+    // Create lookup map
+    const metadataMap = new Map<string, any>();
+    metadataList.forEach(meta => metadataMap.set(meta.key, meta));
+
+    // Build columns strictly in config order
+    const columns: DataTableColumn<any>[] = [];
+
+    orderedKeys.forEach(key => {
+      const meta = metadataMap.get(key);
+      if (!meta) return; // ignore missing keys safely
+
+      const component = meta.componentType?.name?.toLowerCase();
+
+      const column: DataTableColumn<any> = {
+        key: meta.key,
+        label: meta.title,
+        sortable: true,
+        searchable: true,
+      };
+
+      // Type handling
+      if (component === 'date') {
+        column.type = 'date';
+      }
+      columns.push(column);
+    });
+    return columns;
+  }
+
+  buildTableRows(items: any[]): any[] {
+    return items.map(item => {
+      const row: any = {
+        item_id: item.item_id, // needed for edit/delete actions
+        name:item.name,
+        createdAt:item.createdAt
+      };
+
+      // Backend already gives metadata as { key: value }
+      const metadata = item.metadata || {};
+
+      // Populate row strictly using config order
+      this.FILE_TABLE_METADATA_KEYS.forEach((key: string) => {
+        row[key] = metadata[key] ?? 'N.A';
+      });
+      return row;
     });
   }
 

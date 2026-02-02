@@ -14,6 +14,8 @@ export interface AppConfig {
     enableNotifications: boolean;
     enableChat: boolean;
   };
+  filesTableColumn:any[],
+  fileNameConfig:string
 }
 
 @Injectable({
