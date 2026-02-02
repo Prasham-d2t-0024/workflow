@@ -114,10 +114,11 @@
                               (input)="formatDateInput($event, metadata.metadata_registry_id.toString())"
                             /> -->
 
+                            <!-- (dateChange)="handleDateChange($event,metadata.metadata_registry_id)" -->
                             <app-date-picker
                               id="date-picker-multiple"
+                              formControlName="{{ metadata.metadata_registry_id }}"
                               placeholder="Select a date"
-                              (dateChange)="handleDateChange($event,metadata.metadata_registry_id)"
                               class="w-full rounded-lg bg-transparent text-sm dark:bg-gray-900 dark:text-white/90"
                               [ngClass]="{
                                 'border-red-500':
@@ -257,11 +258,12 @@
                       class="w-full rounded-lg border bg-transparent py-2.5 px-4 text-sm dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
                       (input)="formatDateInput($event, metadata.metadata_registry_id.toString())"
                     /> -->
+                    <!-- (dateChange)="handleDateChange($event,metadata.metadata_registry_id)" -->
                     @case ('date') {
                       <app-date-picker
                         id="date-picker-single"
                         placeholder="Select a date"
-                        (dateChange)="handleDateChange($event,metadata.metadata_registry_id)"
+                        formControlName="{{ metadata.metadata_registry_id }}"
                         class="w-full rounded-lg bg-transparent text-sm dark:bg-gray-900 dark:text-white/90"
                         [ngClass]="{
                           'border-red-500':
@@ -326,7 +328,7 @@
     <!-- Empty State -->
     @if (items && items.length === 0) {
       <div class="text-sm text-gray-500 dark:text-gray-400 italic">
-        No items added yet.
+        No files added yet.
       </div>
     }
 
