@@ -344,26 +344,42 @@
           <label class="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
             Batch Related Actions
           </label>
+        </div>
+        <div class="flex gap-2 justify-center items-center">
           <app-date-picker 
             (dateChange)="handleDeliveryDateChange($event)"
             placeholder="Select batch delivery date"
-            class="w-full">
+            class="w-full flex-1"
+            [defaultDate]="defaultBatchDeliveryDate">
           </app-date-picker>
-        </div>
-
-        <div class="flex justify-end">
-          <app-button 
-            [variant]="'primary'" 
-            [size]="'md'"
-            (btnClick)="commitBatch()"
-            [disabled]="!items || items.length === 0">
-            <i class="fas fa-check mr-2"></i>
-            Commit Batch
-          </app-button>
+  
+          <div class="flex justify-end">
+            <app-button 
+              [variant]="'primary'" 
+              [size]="'md'"
+              (btnClick)="commitBatch()"
+              [disabled]="!fileTableRows || fileTableRows.length === 0">
+              <i class="fas fa-check mr-2"></i>
+              Commit Batch
+            </app-button>
+          </div>
         </div>
       </div>
     </div>
   }
+    <!-- Batch Table -->
+    <div class="mt-6 space-y-3">
+      <app-datatable
+        [columns]="batchTableColumns"
+        [data]="batchTableRows"
+        [headerConfig]="batchTableHeaderConfig"
+        [config]="{
+          pageSize: 5,
+          showSearch: true,
+          showPagination: true
+        }">
+      </app-datatable>
+    </div>
 </div>
 
 

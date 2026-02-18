@@ -59,6 +59,7 @@ export class FileCreationComponent implements OnInit {
   isDevMode = isDevMode();
   batchDeliveryDate: string | null = null;
   fileNameConfig: string = '';
+  defaultBatchDeliveryDate = new Date()
 
   // Files table handling
 
@@ -94,6 +95,51 @@ export class FileCreationComponent implements OnInit {
       handler: (row:any) => this.deleteItem(row),
     },
   ];
+
+  // Batch table handling
+  batchTableColumns: DataTableColumn<any>[] = [
+    {
+      key: 'bundle_name',
+      label: 'Bundle Name',
+      sortable: true,
+      searchable: true,
+    },
+    {
+      key: 'createdAt',
+      label: 'Created At',
+      type: 'date',
+      sortable: true,
+    },
+    {
+      key: 'updatedAt',
+      label: 'Updated At',
+      type: 'date',
+      sortable: true,
+    },
+    {
+      key: 'totalFiles',
+      label: 'Total Files',
+      sortable: true,
+    },
+    {
+      key: 'batch_delivery_date',
+      label: 'Batch Delivery Date',
+      type: 'date',
+      sortable: true,
+    },
+    // {
+    //   key: 'is_committed',
+    //   label: 'Is Committed',
+    //   sortable: true,
+    //   searchable: true,
+    // },
+  ];
+
+  batchTableRows: any[] = [];
+
+  batchTableHeaderConfig: DataTableHeaderConfig<any> = {
+    title: 'Batch Information'
+  };
 
 
   constructor(
@@ -402,6 +448,18 @@ getFormArray(id: number): FormArray {
   loadAllItems():void{
     this.metadataRegistryService.getItemsFromCurrentBatch().subscribe((resp)=>{
        this.fileTableRows = this.buildTableRows(resp.items);
+       this.loadBatchData();
+    });
+  }
+
+  loadBatchData():void{
+    this.fileCreationService.getBatchData().subscribe({
+      next: (resp: any) => {
+        this.batchTableRows = resp || [];
+      },
+      error: (err) => {
+        console.error('Failed to load batch data:', err);
+      }
     });
   }
   loadAllItemsById(itemId:any):void{

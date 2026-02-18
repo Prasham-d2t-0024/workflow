@@ -39,5 +39,9 @@ export class FileCreationService {
   commitBatch(payload:any):Observable<any>{
     return this.apiService.post(`${this.batchesEndpoint}/commit`,payload,true);
   }
+
+  getBatchData():Observable<any>{
+    return this.apiService.get(`${this.batchesEndpoint}/by-user`,null,true);
+  }
   
 }
